@@ -8,8 +8,7 @@ export function EntryRow(props: { entry: Letter[] }) {
     <div className="flex content-center space-x-1">
       {Array(5)
         .fill(undefined)
-        // @ts-ignore
-        .map((udf, index) => (
+        .map((_, index) => (
           <LetterCard
             letter={props.entry[index]}
             color={getColor(props.entry)}

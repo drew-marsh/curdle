@@ -32,7 +32,7 @@ function coloringForAnswer(guess: Letter[], answer: Letter[]): LetterColor[] {
 
     const guessLetter = guess[index];
 
-    let guessLetterCount = (guessLetterCounts[guessLetter] ?? 0) + 1;
+    const guessLetterCount = (guessLetterCounts[guessLetter] ?? 0) + 1;
     guessLetterCounts[guessLetter] = guessLetterCount;
 
     if (guessLetterCount <= letterCountsByGuess[answer.join('')][guessLetter]) {
