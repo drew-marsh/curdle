@@ -16,7 +16,7 @@ export function Win(props: { game: Game }) {
         />
         <p className="text-center text-2xl">guesses!</p>
       </div>
-      <button onClick={game.clearGuesseds}>
+      <button onClick={game.reset}>
         <div className="rounded-md bg-green-700">
           <p className="m-1 text-center text-white">Play Again</p>
         </div>

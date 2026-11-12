@@ -2,11 +2,21 @@ import { useState } from 'react';
 import { Letter } from '../data/letters';
 import { Guessed } from '../data/types';
 import _ from 'lodash';
+import { answerWords } from '../data/answer-words';
+import { guessWords } from '../data/guess-words';
+import { colorGuess } from '../logic/color-guess';
+import { makesValidWord } from '../logic/makes-valid-word';
 
 export function useGame() {
   const [entry, addLetter, removeLetter, clearEntry] = useEntry();
-  const { guesseds, addGuessed, undo, redo, clearGuesseds, clearUndid } =
-    useGuesseds();
+  const {
+    guesseds,
+    addGuessed,
+    undoGuessed,
+    redoGuessed,
+    clearGuesseds,
+    clearUndid,
+  } = useGuesseds();
   const [hardMode, setHardMode] = useState(false);
   function toggleHardMode() {
     clearUndid();
@@ -16,19 +26,46 @@ export function useGame() {
     guesseds.length > 0 ? guesseds[guesseds.length - 1] : undefined;
   const win = !!lastGuess?.every(gl => gl.color === 'green');
 
+  function submitEntry() {
+    if (!makesValidWord(entry)) {
+      return;
+    }
+    const guessed = colorGuess(
+      entry,
+      guesseds,
+      hardMode ? guessWords : answerWords
+    );
+    addGuessed(guessed);
+    clearEntry();
+  }
+
+  function undo() {
+    if (entry.length > 0) {
+      clearEntry();
+      return;
+    }
+    undoGuessed();
+  }
+
+  function redo() {
+    if (entry.length > 0) {
+      return;
+    }
+    redoGuessed();
+  }
+
   return {
     entry,
     guesseds,
-    clearGuesseds,
     win,
     hardMode,
+    reset: clearGuesseds,
     toggleHardMode,
-    undo,
-    redo,
     addLetter,
     removeLetter,
-    addGuessed,
-    clearEntry,
+    submitEntry,
+    undo,
+    redo,
   };
 }
 
@@ -52,7 +89,7 @@ function useGuesseds() {
     setUndid([]);
   }
 
-  function undo() {
+  function undoGuessed() {
     if (guesseds.length === 0) {
       return;
     }
@@ -61,7 +98,7 @@ function useGuesseds() {
     setUndid([...undid, lastGuessed!]);
   }
 
-  function redo() {
+  function redoGuessed() {
     if (undid.length === 0) {
       return;
     }
@@ -73,7 +110,14 @@ function useGuesseds() {
     setGuesseds([]);
   }
 
-  return { guesseds, addGuessed, undo, redo, clearGuesseds, clearUndid };
+  return {
+    guesseds,
+    addGuessed,
+    undoGuessed,
+    redoGuessed,
+    clearGuesseds,
+    clearUndid,
+  };
 }
 
 function useEntry() {

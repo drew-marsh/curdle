@@ -28,3 +28,7 @@ export const alphabet = [
 ] as const;
 
 export type Letter = (typeof alphabet)[number];
+
+export function isLetter(value: string) : value is Letter {
+  return (alphabet as readonly string[]).includes(value);
+}
