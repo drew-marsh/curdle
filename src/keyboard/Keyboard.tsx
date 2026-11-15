@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { Letter, alphabet } from '../data/letters';
 import {
   Guessed,
@@ -54,7 +53,7 @@ function keyboardColoring(guesseds: Guessed[]) {
   const letterMap = Object.fromEntries(
     alphabet.map(letter => [letter, 'lightgrey'])
   );
-  const guessedLetters = _.flatten(guesseds);
+  const guessedLetters = guesseds.flat();
 
   addColorToKeyboard(guessedLetters, letterMap, 'grey');
   addColorToKeyboard(guessedLetters, letterMap, 'yellow');
@@ -68,7 +67,7 @@ function addColorToKeyboard(
   letterMap: { [k: string]: string },
   color: LetterColor
 ) {
-  const lettersThatColor = _.uniq(
+  const lettersThatColor = new Set(
     guessedLetters.filter(l => l.color === color).map(gl => gl.letter)
   );
   lettersThatColor.forEach(letter => (letterMap[letter] = color));

@@ -1,4 +1,4 @@
-import { HelpOutline } from '@mui/icons-material';
+import { HelpOutline } from '../icons';
 import React, { useState } from 'react';
 import { LetterCard } from '../grid/LetterCard';
 import { Info } from './Info';
@@ -17,7 +17,7 @@ export function Header(props: HeaderProps) {
   const { topRight, bottomLeft } = marginText(game.hardMode);
 
   return (
-    <div className={'h-1/10 flex justify-between pb-6'}>
+    <div className={'flex justify-between pb-6'}>
       <Info
         visible={dialogVisible}
         setVisible={setDialogVisible}
@@ -27,12 +27,12 @@ export function Header(props: HeaderProps) {
         className="flex w-5 items-start justify-start py-1"
         onClick={clickHandler(() => setDialogVisible(true))}
       >
-        <HelpOutline className="text-red-900" sx={{ height: '15px' }} />
+        <HelpOutline width={24} height={15} className="text-red-900" />
       </button>
       <div className="flex-col">
         <div className="flex">
           <div className="h-4 w-1/2" />
-          <p className="ml-2 flex w-1/2 items-end text-left  font-sans text-xs font-bold text-red-900">
+          <p className="ml-2 flex w-1/2 items-end text-left font-sans text-xs font-bold text-red-900">
             {topRight.text}
           </p>
         </div>

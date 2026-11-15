@@ -27,13 +27,9 @@ function useInfo(visible: boolean, setVisible: (v: boolean) => void) {
 
   useEffect(() => {
     if (visible) {
-      show();
+      ref.current?.showModal();
     }
   }, [visible]);
-
-  function show() {
-    ref.current?.showModal();
-  }
 
   function hide() {
     ref.current?.close();

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Letter } from '../data/letters';
 import { Guessed } from '../data/types';
-import _ from 'lodash';
 import { answerWords } from '../data/answer-words';
 import { guessWords } from '../data/guess-words';
 import { colorGuess } from '../logic/color-guess';
@@ -81,9 +80,9 @@ function useGuesseds() {
 
   function addGuessed(guessed: Guessed) {
     setGuesseds([...guesseds, guessed]);
-    const lastUndid = _.last(undid);
+    const lastUndid = undid.at(-1);
     if (JSON.stringify(guessed) === JSON.stringify(lastUndid)) {
-      setUndid(_.dropRight(undid, 1));
+      setUndid(undid.slice(0, -1));
       return;
     }
     setUndid([]);
@@ -93,8 +92,8 @@ function useGuesseds() {
     if (guesseds.length === 0) {
       return;
     }
-    setGuesseds(_.dropRight(guesseds, 1));
-    const lastGuessed = _.last(guesseds);
+    setGuesseds(guesseds.slice(0, -1));
+    const lastGuessed = guesseds.at(-1);
     setUndid([...undid, lastGuessed!]);
   }
 
@@ -102,7 +101,7 @@ function useGuesseds() {
     if (undid.length === 0) {
       return;
     }
-    const lastUndid = _.last(undid);
+    const lastUndid = undid.at(-1);
     addGuessed(lastUndid!);
   }
 

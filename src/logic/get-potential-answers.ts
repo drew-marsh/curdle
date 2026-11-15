@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { Letter, alphabet } from '../data/letters';
 import { Guessed } from '../data/types';
 import { letterCountsByGuess } from './count-letters';
@@ -26,7 +25,7 @@ export function getPotentialAnswers(guesseds: Guessed[], answerList: string[]) {
 function narrowConstraints(constraints: Constraints, guessed: Guessed) {
   const { count, position } = constraints;
 
-  _.uniq(guessed.map(gl => gl.letter)).forEach(letter => {
+  new Set(guessed.map(gl => gl.letter)).forEach(letter => {
     const letterCountConstraint = count[letter];
     let greenish = 0;
     let grey = 0;
