@@ -1,5 +1,5 @@
-import { Guessed, letterToCardColorMap } from '../data/types';
-import { LetterCard } from './LetterCard';
+import { Guessed, letterToCardColorMap } from '../data/types'
+import { LetterCard } from './LetterCard'
 
 export function GuessedRow(props: { guessed: Guessed }) {
   return (
@@ -14,8 +14,8 @@ export function GuessedRow(props: { guessed: Guessed }) {
             }
             key={index}
           />
-        );
+        )
       })}
     </div>
-  );
+  )
 }

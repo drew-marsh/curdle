@@ -2308,4 +2308,4 @@ export const answerWords = [
   'zebra',
   'zesty',
   'zonal',
-].map(word => word.toUpperCase());
+].map(word => word.toUpperCase())

@@ -1,14 +1,14 @@
-import { GameGrid } from '../grid/GameGrid';
-import { Keyboard } from '../keyboard/Keyboard';
-import { Header } from './Header';
-import { Win } from './Win';
-import { useGame } from './use-game';
-import { getKeyHandler, useKeyDownListener } from './use-keydown-listener';
+import { GameGrid } from '../grid/GameGrid'
+import { Keyboard } from '../keyboard/Keyboard'
+import { Header } from './Header'
+import { Win } from './Win'
+import { useGame } from './use-game'
+import { getKeyHandler, useKeyDownListener } from './use-keydown-listener'
 
 function App() {
-  const game = useGame();
+  const game = useGame()
 
-  useKeyDownListener(game);
+  useKeyDownListener(game)
 
   return (
     <div className="flex h-screen justify-center">
@@ -21,7 +21,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

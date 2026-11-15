@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { LetterCard } from '../grid/LetterCard';
+import { useEffect, useRef } from 'react'
+import { LetterCard } from '../grid/LetterCard'
 
 export function Info(props: {
-  visible: boolean;
-  setVisible: (v: boolean) => void;
-  hardMode: boolean;
+  visible: boolean
+  setVisible: (v: boolean) => void
+  hardMode: boolean
 }) {
-  const { ref, hide } = useInfo(props.visible, props.setVisible);
+  const { ref, hide } = useInfo(props.visible, props.setVisible)
   return (
     <dialog ref={ref} className="max-w-[430px] rounded-lg p-7">
       {props.hardMode ? <HardModeContent /> : <RegularContent />}
@@ -19,24 +19,24 @@ export function Info(props: {
         </button>
       </div>
     </dialog>
-  );
+  )
 }
 
 function useInfo(visible: boolean, setVisible: (v: boolean) => void) {
-  const ref = useRef<HTMLDialogElement>(null);
+  const ref = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
     if (visible) {
-      ref.current?.showModal();
+      ref.current?.showModal()
     }
-  }, [visible]);
+  }, [visible])
 
   function hide() {
-    ref.current?.close();
-    setVisible(false);
+    ref.current?.close()
+    setVisible(false)
   }
 
-  return { ref, hide };
+  return { ref, hide }
 }
 
 function RegularContent() {
@@ -61,7 +61,7 @@ function RegularContent() {
       <p>Happy Curdling!</p>
       <br />
     </div>
-  );
+  )
 }
 
 function HardModeContent() {
@@ -74,5 +74,5 @@ function HardModeContent() {
       <p>Happy Curdling!</p>
       <br />
     </div>
-  );
+  )
 }

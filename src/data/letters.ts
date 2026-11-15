@@ -25,10 +25,10 @@ export const alphabet = [
   'X',
   'Y',
   'Z',
-] as const;
+] as const
 
-export type Letter = (typeof alphabet)[number];
+export type Letter = (typeof alphabet)[number]
 
 export function isLetter(value: string): value is Letter {
-  return (alphabet as readonly string[]).includes(value);
+  return (alphabet as readonly string[]).includes(value)
 }

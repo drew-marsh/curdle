@@ -1,7 +1,7 @@
-import { guessWords } from '../data/guess-words';
-import { Letter } from '../data/letters';
-import { CardColor } from '../data/types';
-import { LetterCard } from './LetterCard';
+import { guessWords } from '../data/guess-words'
+import { Letter } from '../data/letters'
+import { CardColor } from '../data/types'
+import { LetterCard } from './LetterCard'
 
 export function EntryRow(props: { entry: Letter[] }) {
   return (
@@ -16,11 +16,11 @@ export function EntryRow(props: { entry: Letter[] }) {
           />
         ))}
     </div>
-  );
+  )
 }
 
 function getColor(entry: Letter[]): CardColor {
   return guessWords.find(word => word.startsWith(entry.join('')))
     ? 'white'
-    : 'white-red';
+    : 'white-red'
 }

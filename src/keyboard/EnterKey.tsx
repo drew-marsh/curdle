@@ -1,4 +1,4 @@
-import { KeyboardButton } from './KeyboardButton';
+import { KeyboardButton } from './KeyboardButton'
 
 export function EnterKey(props: React.ComponentProps<'button'>) {
   return (
@@ -9,5 +9,5 @@ export function EnterKey(props: React.ComponentProps<'button'>) {
     >
       <p className="text-sm">ENTER</p>
     </KeyboardButton>
-  );
+  )
 }

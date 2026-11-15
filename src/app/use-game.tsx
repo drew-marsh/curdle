@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Letter } from '../data/letters';
-import { Guessed } from '../data/types';
-import { answerWords } from '../data/answer-words';
-import { guessWords } from '../data/guess-words';
-import { colorGuess } from '../logic/color-guess';
-import { makesValidWord } from '../logic/makes-valid-word';
+import { useState } from 'react'
+import { Letter } from '../data/letters'
+import { Guessed } from '../data/types'
+import { answerWords } from '../data/answer-words'
+import { guessWords } from '../data/guess-words'
+import { colorGuess } from '../logic/color-guess'
+import { makesValidWord } from '../logic/makes-valid-word'
 
 export function useGame() {
-  const [entry, addLetter, removeLetter, clearEntry] = useEntry();
+  const [entry, addLetter, removeLetter, clearEntry] = useEntry()
   const {
     guesseds,
     addGuessed,
@@ -15,42 +15,42 @@ export function useGame() {
     redoGuessed,
     clearGuesseds,
     clearUndid,
-  } = useGuesseds();
-  const [hardMode, setHardMode] = useState(false);
+  } = useGuesseds()
+  const [hardMode, setHardMode] = useState(false)
   function toggleHardMode() {
-    clearUndid();
-    setHardMode(!hardMode);
+    clearUndid()
+    setHardMode(!hardMode)
   }
   const lastGuess =
-    guesseds.length > 0 ? guesseds[guesseds.length - 1] : undefined;
-  const win = !!lastGuess?.every(gl => gl.color === 'green');
+    guesseds.length > 0 ? guesseds[guesseds.length - 1] : undefined
+  const win = !!lastGuess?.every(gl => gl.color === 'green')
 
   function submitEntry() {
     if (!makesValidWord(entry)) {
-      return;
+      return
     }
     const guessed = colorGuess(
       entry,
       guesseds,
       hardMode ? guessWords : answerWords
-    );
-    addGuessed(guessed);
-    clearEntry();
+    )
+    addGuessed(guessed)
+    clearEntry()
   }
 
   function undo() {
     if (entry.length > 0) {
-      clearEntry();
-      return;
+      clearEntry()
+      return
     }
-    undoGuessed();
+    undoGuessed()
   }
 
   function redo() {
     if (entry.length > 0) {
-      return;
+      return
     }
-    redoGuessed();
+    redoGuessed()
   }
 
   return {
@@ -65,48 +65,48 @@ export function useGame() {
     submitEntry,
     undo,
     redo,
-  };
+  }
 }
 
-export type Game = ReturnType<typeof useGame>;
+export type Game = ReturnType<typeof useGame>
 
 function useGuesseds() {
-  const [guesseds, setGuesseds] = useState<Guessed[]>([]);
-  const [undid, setUndid] = useState<Guessed[]>([]);
+  const [guesseds, setGuesseds] = useState<Guessed[]>([])
+  const [undid, setUndid] = useState<Guessed[]>([])
 
   function clearUndid() {
-    setUndid([]);
+    setUndid([])
   }
 
   function addGuessed(guessed: Guessed) {
-    setGuesseds([...guesseds, guessed]);
-    const lastUndid = undid.at(-1);
+    setGuesseds([...guesseds, guessed])
+    const lastUndid = undid.at(-1)
     if (JSON.stringify(guessed) === JSON.stringify(lastUndid)) {
-      setUndid(undid.slice(0, -1));
-      return;
+      setUndid(undid.slice(0, -1))
+      return
     }
-    setUndid([]);
+    setUndid([])
   }
 
   function undoGuessed() {
     if (guesseds.length === 0) {
-      return;
+      return
     }
-    setGuesseds(guesseds.slice(0, -1));
-    const lastGuessed = guesseds.at(-1);
-    setUndid([...undid, lastGuessed!]);
+    setGuesseds(guesseds.slice(0, -1))
+    const lastGuessed = guesseds.at(-1)
+    setUndid([...undid, lastGuessed!])
   }
 
   function redoGuessed() {
     if (undid.length === 0) {
-      return;
+      return
     }
-    const lastUndid = undid.at(-1);
-    addGuessed(lastUndid!);
+    const lastUndid = undid.at(-1)
+    addGuessed(lastUndid!)
   }
 
   function clearGuesseds() {
-    setGuesseds([]);
+    setGuesseds([])
   }
 
   return {
@@ -116,21 +116,21 @@ function useGuesseds() {
     redoGuessed,
     clearGuesseds,
     clearUndid,
-  };
+  }
 }
 
 function useEntry() {
-  const [entry, setEntry] = useState<Letter[]>([]);
+  const [entry, setEntry] = useState<Letter[]>([])
   function addLetter(letter: Letter) {
-    if (entry.length < 5) setEntry([...entry, letter]);
+    if (entry.length < 5) setEntry([...entry, letter])
   }
 
   function removeLetter() {
-    setEntry(entry.slice(0, entry.length - 1));
+    setEntry(entry.slice(0, entry.length - 1))
   }
 
   function clearEntry() {
-    setEntry([]);
+    setEntry([])
   }
 
   return [entry, addLetter, removeLetter, clearEntry] as [
@@ -138,5 +138,5 @@ function useEntry() {
     typeof addLetter,
     typeof removeLetter,
     typeof clearEntry,
-  ];
+  ]
 }

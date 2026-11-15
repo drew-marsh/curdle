@@ -1,19 +1,19 @@
-import { Letter, alphabet } from '../data/letters';
+import { Letter, alphabet } from '../data/letters'
 import {
   Guessed,
   KeyColor,
   LetterColor,
   letterToCardColorMap,
-} from '../data/types';
-import { BackspaceKey } from './BackspaceKey';
-import { EnterKey } from './EnterKey';
-import { LetterKey } from './LetterKey';
+} from '../data/types'
+import { BackspaceKey } from './BackspaceKey'
+import { EnterKey } from './EnterKey'
+import { LetterKey } from './LetterKey'
 
 export function Keyboard(props: {
-  guesseds: Guessed[];
-  handleKey: (key: string) => void;
+  guesseds: Guessed[]
+  handleKey: (key: string) => void
 }) {
-  const coloring = keyboardColoring(props.guesseds);
+  const coloring = keyboardColoring(props.guesseds)
 
   return (
     <div className="flex w-full flex-col space-y-1 p-2 pb-4">
@@ -31,7 +31,7 @@ export function Keyboard(props: {
         <BackspaceKey onClick={() => props.handleKey('Backspace')} />
       </div>
     </div>
-  );
+  )
 }
 
 function keysFromLetters(
@@ -46,20 +46,20 @@ function keysFromLetters(
       key={letter}
       onClick={() => handleKey(letter)}
     />
-  ));
+  ))
 }
 
 function keyboardColoring(guesseds: Guessed[]) {
   const letterMap = Object.fromEntries(
     alphabet.map(letter => [letter, 'lightgrey'])
-  );
-  const guessedLetters = guesseds.flat();
+  )
+  const guessedLetters = guesseds.flat()
 
-  addColorToKeyboard(guessedLetters, letterMap, 'grey');
-  addColorToKeyboard(guessedLetters, letterMap, 'yellow');
-  addColorToKeyboard(guessedLetters, letterMap, 'green');
+  addColorToKeyboard(guessedLetters, letterMap, 'grey')
+  addColorToKeyboard(guessedLetters, letterMap, 'yellow')
+  addColorToKeyboard(guessedLetters, letterMap, 'green')
 
-  return letterMap as Record<Letter, KeyColor>;
+  return letterMap as Record<Letter, KeyColor>
 }
 
 function addColorToKeyboard(
@@ -69,6 +69,6 @@ function addColorToKeyboard(
 ) {
   const lettersThatColor = new Set(
     guessedLetters.filter(l => l.color === color).map(gl => gl.letter)
-  );
-  lettersThatColor.forEach(letter => (letterMap[letter] = color));
+  )
+  lettersThatColor.forEach(letter => (letterMap[letter] = color))
 }

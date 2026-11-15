@@ -1,9 +1,9 @@
-import { Letter } from './letters';
+import { Letter } from './letters'
 
-export type LetterColor = 'green' | 'yellow' | 'grey';
-export type KeyColor = LetterColor | 'lightgrey';
-type GuessedLetter = { letter: Letter; color: LetterColor };
-export type Guessed = GuessedLetter[];
+export type LetterColor = 'green' | 'yellow' | 'grey'
+export type KeyColor = LetterColor | 'lightgrey'
+type GuessedLetter = { letter: Letter; color: LetterColor }
+export type Guessed = GuessedLetter[]
 
 export type CardColor =
   | 'green'
@@ -13,14 +13,14 @@ export type CardColor =
   | 'lightgrey'
   | 'black'
   | 'red'
-  | 'white-red';
+  | 'white-red'
 
 export const letterToCardColorMap = {
   green: 'green',
   grey: 'grey',
   lightgrey: 'lightgrey',
   yellow: 'yellow',
-} satisfies Record<KeyColor, CardColor>;
+} satisfies Record<KeyColor, CardColor>
 
 export const cardColors = {
   green: { bg: 'bg-green-700', text: 'text-white' },
@@ -31,4 +31,4 @@ export const cardColors = {
   black: { bg: 'bg-black', text: 'text-white' },
   red: { bg: 'bg-red-900', text: 'text-white' },
   'white-red': { bg: 'bg-white', text: 'text-red-600' },
-} satisfies Record<CardColor, { bg: string; text: string }>;
+} satisfies Record<CardColor, { bg: string; text: string }>

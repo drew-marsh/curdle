@@ -1,20 +1,20 @@
-import { HelpOutline } from '../icons';
-import React, { useState } from 'react';
-import { LetterCard } from '../grid/LetterCard';
-import { Info } from './Info';
-import { twMerge } from 'tailwind-merge';
-import { Game } from './use-game';
+import { HelpOutline } from '../icons'
+import React, { useState } from 'react'
+import { LetterCard } from '../grid/LetterCard'
+import { Info } from './Info'
+import { twMerge } from 'tailwind-merge'
+import { Game } from './use-game'
 
 type HeaderProps = {
-  game: Game;
-};
+  game: Game
+}
 
 export function Header(props: HeaderProps) {
-  const { game } = props;
+  const { game } = props
 
-  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false)
 
-  const { topRight, bottomLeft } = marginText(game.hardMode);
+  const { topRight, bottomLeft } = marginText(game.hardMode)
 
   return (
     <div className={'flex justify-between pb-6'}>
@@ -62,16 +62,16 @@ export function Header(props: HeaderProps) {
       </div>
       <div className="w-5" />
     </div>
-  );
+  )
 }
 
 function FirstLetterCard(game: Game) {
-  const gameInProgress = game.guesseds.length > 0;
-  const card = <LetterCard color="red" letter={game.hardMode ? 'H' : 'C'} />;
+  const gameInProgress = game.guesseds.length > 0
+  const card = <LetterCard color="red" letter={game.hardMode ? 'H' : 'C'} />
   if (gameInProgress) {
-    return card;
+    return card
   }
-  return <button onClick={clickHandler(game.toggleHardMode)}>{card}</button>;
+  return <button onClick={clickHandler(game.toggleHardMode)}>{card}</button>
 }
 
 function marginText(hardMode: boolean) {
@@ -79,17 +79,17 @@ function marginText(hardMode: boolean) {
     return {
       topRight: { text: 'wor' },
       bottomLeft: { text: 'sed', alignment: 'text-right' },
-    };
+    }
   }
   return {
     topRight: { text: ' ' },
     bottomLeft: { text: 'ard mode', alignment: 'text-left' },
-  };
+  }
 }
 
 function clickHandler(fn: () => void) {
   return (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.currentTarget.blur();
-    fn();
-  };
+    e.currentTarget.blur()
+    fn()
+  }
 }

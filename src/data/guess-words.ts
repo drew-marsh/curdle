@@ -14854,4 +14854,4 @@ export const guessWords = [
   'flack',
   'widow',
   'augur',
-].map(word => word.toUpperCase());
+].map(word => word.toUpperCase())
