@@ -10,7 +10,7 @@ function App() {
   useKeyDownListener(game)
 
   return (
-    <div className="flex h-screen justify-center">
+    <div className="flex h-dvh justify-center">
       <div className="flex h-dvh w-full max-w-[430px] flex-col sm:h-[90dvh]">
         <Header game={game} />
         <div className="flex h-full flex-col items-center justify-between">
