@@ -129,6 +129,15 @@ describe('useGame', () => {
       act(() => result.current.redo())
       expect(guessWords()).toEqual([])
     })
+
+    it('cannot toggle hard mode mid-game', () => {
+      const { result, guess } = setup()
+      expect(result.current.canToggleHardMode).toBe(true)
+      guess('CRANE')
+      expect(result.current.canToggleHardMode).toBe(false)
+      act(() => result.current.toggleHardMode())
+      expect(result.current.hardMode).toBe(false)
+    })
   })
 
   it('reset clears guesses', () => {
@@ -145,6 +154,7 @@ function fakeGame(overrides: Partial<Game> = {}): Game {
     guesses: [],
     win: false,
     hardMode: false,
+    canToggleHardMode: true,
     reset: vi.fn(),
     toggleHardMode: vi.fn(),
     addLetter: vi.fn(),

@@ -7,7 +7,11 @@ export function useGame() {
   const { guesses, addGuess, undoGuess, redoGuess, clearGuesses, clearUndone } =
     useGuesses()
   const [hardMode, setHardMode] = useState(false)
+  const canToggleHardMode = guesses.length === 0
   function toggleHardMode() {
+    if (!canToggleHardMode) {
+      return
+    }
     clearUndone()
     setHardMode(!hardMode)
   }
@@ -41,6 +45,7 @@ export function useGame() {
     guesses,
     win,
     hardMode,
+    canToggleHardMode,
     reset: clearGuesses,
     toggleHardMode,
     addLetter,

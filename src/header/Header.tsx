@@ -66,9 +66,8 @@ export function Header(props: HeaderProps) {
 }
 
 function FirstLetterCard(game: Game) {
-  const gameInProgress = game.guesses.length > 0
   const card = <LetterCard color="red" letter={game.hardMode ? 'H' : 'C'} />
-  if (gameInProgress) {
+  if (!game.canToggleHardMode) {
     return card
   }
   return <button onClick={clickHandler(game.toggleHardMode)}>{card}</button>
