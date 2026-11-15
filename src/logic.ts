@@ -173,44 +173,29 @@ function meetsCountConstraints(
 }
 
 function colorPotentialAnswers(answers: string[], guess: Letter[]) {
+  const guessWord = guess.join('')
   return answers.map(answer =>
-    JSON.stringify(coloringForAnswer(guess, answer.split('') as Letter[]))
+    JSON.stringify(_wordleColoring(guessWord, answer))
   )
 }
 
-function coloringForAnswer(guess: Letter[], answer: Letter[]): LetterColor[] {
-  const guessLetterCounts = {} as Partial<Record<Letter, number>>
-
-  const coloringGreenOnly: ('green' | undefined)[] = answer.map(
-    (answerLetter, index) => {
-      const guessLetter = guess[index]
-      if (guessLetter !== answerLetter) {
-        return
-      }
-
-      guessLetterCounts[guessLetter] = (guessLetterCounts[guessLetter] ?? 0) + 1
-
-      return 'green'
+// exported for testing
+export function _wordleColoring(guess: string, answer: string): LetterColor[] {
+  const result: LetterColor[] = Array(5).fill('grey')
+  const unmatched: string[] = []
+  for (let i = 0; i < 5; i++) {
+    if (guess[i] === answer[i]) result[i] = 'green'
+    else unmatched.push(answer[i])
+  }
+  for (let i = 0; i < 5; i++) {
+    if (result[i] === 'green') continue
+    const j = unmatched.indexOf(guess[i])
+    if (j !== -1) {
+      result[i] = 'yellow'
+      unmatched.splice(j, 1)
     }
-  )
-
-  const coloring = coloringGreenOnly.map((color, index) => {
-    if (color) {
-      return color
-    }
-
-    const guessLetter = guess[index]
-
-    const guessLetterCount = (guessLetterCounts[guessLetter] ?? 0) + 1
-    guessLetterCounts[guessLetter] = guessLetterCount
-
-    if (guessLetterCount <= letterCountsByGuess[answer.join('')][guessLetter]) {
-      return 'yellow'
-    }
-    return 'grey'
-  })
-
-  return coloring
+  }
+  return result
 }
 
 const allGreen = '["green","green","green","green","green"]'
