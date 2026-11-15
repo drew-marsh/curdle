@@ -3,7 +3,7 @@ import { Game } from '../hooks'
 
 export function Win(props: { game: Game }) {
   const { game } = props
-  const numGuesses = game.guesseds.length
+  const numGuesses = game.guesses.length
   const guessesColor = getWinTileColor(numGuesses, game.hardMode)
   return (
     <div className={`flex flex-col items-center space-y-1`}>

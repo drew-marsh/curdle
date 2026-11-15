@@ -1,22 +1,13 @@
-import { Guessed } from '../logic'
-import { letterToCardColorMap } from '../ui/colors'
+import { Guess } from '../logic'
 import { LetterCard } from '../ui/LetterCard'
 
-export function GuessedRow(props: { guessed: Guessed }) {
+export function GuessedRow(props: { guess: Guess }) {
+  const { word, colors } = props.guess
   return (
     <div className="flex content-center space-x-1">
-      {props.guessed.map((guessedLetter, index) => {
-        return (
-          <LetterCard
-            letter={guessedLetter.letter}
-            color={
-              // "black"
-              letterToCardColorMap[guessedLetter.color]
-            }
-            key={index}
-          />
-        )
-      })}
+      {colors.map((color, index) => (
+        <LetterCard letter={word[index]} color={color} key={index} />
+      ))}
     </div>
   )
 }

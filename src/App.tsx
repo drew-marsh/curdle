@@ -16,7 +16,7 @@ function App() {
         <div className="flex h-full flex-col items-center justify-between">
           <GameGrid game={game} />
           {game.win && <Win game={game} />}
-          <Keyboard guesseds={game.guesseds} handleKey={getKeyHandler(game)} />
+          <Keyboard guesses={game.guesses} handleKey={getKeyHandler(game)} />
         </div>
       </div>
     </div>

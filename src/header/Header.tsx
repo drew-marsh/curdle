@@ -66,7 +66,7 @@ export function Header(props: HeaderProps) {
 }
 
 function FirstLetterCard(game: Game) {
-  const gameInProgress = game.guesseds.length > 0
+  const gameInProgress = game.guesses.length > 0
   const card = <LetterCard color="red" letter={game.hardMode ? 'H' : 'C'} />
   if (gameInProgress) {
     return card

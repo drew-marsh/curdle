@@ -1,36 +1,23 @@
 import { useEffect, useState } from 'react'
-import { colorGuess, Guessed, isLetter, Letter, makesValidWord } from './logic'
+import { colorGuess, Guess, isLetter, Letter, makesValidWord } from './logic'
 import { answerWords, guessWords } from './words'
 
 export function useGame() {
   const { entry, addLetter, removeLetter, clearEntry } = useEntry()
-  const {
-    guesseds,
-    addGuessed,
-    undoGuessed,
-    redoGuessed,
-    clearGuesseds,
-    clearUndid,
-  } = useGuesseds()
+  const { guesses, addGuess, undoGuess, redoGuess, clearGuesses, clearUndone } =
+    useGuesses()
   const [hardMode, setHardMode] = useState(false)
   function toggleHardMode() {
-    clearUndid()
+    clearUndone()
     setHardMode(!hardMode)
   }
-  const lastGuess =
-    guesseds.length > 0 ? guesseds[guesseds.length - 1] : undefined
-  const win = !!lastGuess?.every(gl => gl.color === 'green')
+  const win = !!guesses.at(-1)?.colors.every(color => color === 'green')
 
   function submitEntry() {
     if (!makesValidWord(entry)) {
       return
     }
-    const guessed = colorGuess(
-      entry,
-      guesseds,
-      hardMode ? guessWords : answerWords
-    )
-    addGuessed(guessed)
+    addGuess(colorGuess(entry, guesses, hardMode ? guessWords : answerWords))
     clearEntry()
   }
 
@@ -39,22 +26,22 @@ export function useGame() {
       clearEntry()
       return
     }
-    undoGuessed()
+    undoGuess()
   }
 
   function redo() {
     if (entry.length > 0) {
       return
     }
-    redoGuessed()
+    redoGuess()
   }
 
   return {
     entry,
-    guesseds,
+    guesses,
     win,
     hardMode,
-    reset: clearGuesseds,
+    reset: clearGuesses,
     toggleHardMode,
     addLetter,
     removeLetter,
@@ -66,67 +53,70 @@ export function useGame() {
 
 export type Game = ReturnType<typeof useGame>
 
-function useGuesseds() {
-  const [guesseds, setGuesseds] = useState<Guessed[]>([])
-  const [undid, setUndid] = useState<Guessed[]>([])
+function sameGuess(a: Guess, b: Guess | undefined) {
+  return a.word === b?.word && a.colors.join() === b.colors.join()
+}
 
-  function clearUndid() {
-    setUndid([])
+function useGuesses() {
+  const [guesses, setGuesses] = useState<Guess[]>([])
+  const [undone, setUndone] = useState<Guess[]>([])
+
+  function clearUndone() {
+    setUndone([])
   }
 
-  function addGuessed(guessed: Guessed) {
-    setGuesseds([...guesseds, guessed])
-    const lastUndid = undid.at(-1)
-    if (JSON.stringify(guessed) === JSON.stringify(lastUndid)) {
-      setUndid(undid.slice(0, -1))
+  function addGuess(guess: Guess) {
+    setGuesses([...guesses, guess])
+    if (sameGuess(guess, undone.at(-1))) {
+      setUndone(undone.slice(0, -1))
       return
     }
-    setUndid([])
+    setUndone([])
   }
 
-  function undoGuessed() {
-    if (guesseds.length === 0) {
+  function undoGuess() {
+    const last = guesses.at(-1)
+    if (!last) {
       return
     }
-    setGuesseds(guesseds.slice(0, -1))
-    const lastGuessed = guesseds.at(-1)
-    setUndid([...undid, lastGuessed!])
+    setGuesses(guesses.slice(0, -1))
+    setUndone([...undone, last])
   }
 
-  function redoGuessed() {
-    if (undid.length === 0) {
+  function redoGuess() {
+    const last = undone.at(-1)
+    if (!last) {
       return
     }
-    const lastUndid = undid.at(-1)
-    addGuessed(lastUndid!)
+    addGuess(last)
   }
 
-  function clearGuesseds() {
-    setGuesseds([])
+  function clearGuesses() {
+    setGuesses([])
   }
 
   return {
-    guesseds,
-    addGuessed,
-    undoGuessed,
-    redoGuessed,
-    clearGuesseds,
-    clearUndid,
+    guesses,
+    addGuess,
+    undoGuess,
+    redoGuess,
+    clearGuesses,
+    clearUndone,
   }
 }
 
 function useEntry() {
-  const [entry, setEntry] = useState<Letter[]>([])
+  const [entry, setEntry] = useState('')
   function addLetter(letter: Letter) {
-    if (entry.length < 5) setEntry([...entry, letter])
+    if (entry.length < 5) setEntry(entry + letter)
   }
 
   function removeLetter() {
-    setEntry(entry.slice(0, entry.length - 1))
+    setEntry(entry.slice(0, -1))
   }
 
   function clearEntry() {
-    setEntry([])
+    setEntry('')
   }
 
   return { entry, addLetter, removeLetter, clearEntry }

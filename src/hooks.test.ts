@@ -16,16 +16,15 @@ function setup() {
     type(word)
     submit()
   }
-  const guessWords = () =>
-    result.current.guesseds.map(g => g.map(gl => gl.letter).join(''))
+  const guessWords = () => result.current.guesses.map(g => g.word)
   return { result, type, submit, guess, guessWords }
 }
 
 describe('useGame', () => {
   it('starts empty', () => {
     const { result } = setup()
-    expect(result.current.entry).toEqual([])
-    expect(result.current.guesseds).toEqual([])
+    expect(result.current.entry).toBe('')
+    expect(result.current.guesses).toEqual([])
     expect(result.current.win).toBe(false)
     expect(result.current.hardMode).toBe(false)
   })
@@ -34,20 +33,20 @@ describe('useGame', () => {
     it('adds letters up to five', () => {
       const { result, type } = setup()
       type('CRANES')
-      expect(result.current.entry.join('')).toBe('CRANE')
+      expect(result.current.entry).toBe('CRANE')
     })
 
     it('removes the last letter', () => {
       const { result, type } = setup()
       type('CRA')
       act(() => result.current.removeLetter())
-      expect(result.current.entry.join('')).toBe('CR')
+      expect(result.current.entry).toBe('CR')
     })
 
     it('does nothing when removing from an empty entry', () => {
       const { result } = setup()
       act(() => result.current.removeLetter())
-      expect(result.current.entry).toEqual([])
+      expect(result.current.entry).toBe('')
     })
   })
 
@@ -55,22 +54,22 @@ describe('useGame', () => {
     it('ignores invalid words', () => {
       const { result, guess } = setup()
       guess('XXXXX')
-      expect(result.current.guesseds).toEqual([])
-      expect(result.current.entry.join('')).toBe('XXXXX')
+      expect(result.current.guesses).toEqual([])
+      expect(result.current.entry).toBe('XXXXX')
     })
 
     it('ignores incomplete entries', () => {
       const { result, guess } = setup()
       guess('CRAN')
-      expect(result.current.guesseds).toEqual([])
+      expect(result.current.guesses).toEqual([])
     })
 
     it('adds a colored guess and clears the entry', () => {
       const { result, guess, guessWords } = setup()
       guess('CRANE')
       expect(guessWords()).toEqual(['CRANE'])
-      expect(result.current.guesseds[0]).toHaveLength(5)
-      expect(result.current.entry).toEqual([])
+      expect(result.current.guesses[0].colors).toHaveLength(5)
+      expect(result.current.entry).toBe('')
     })
   })
 
@@ -80,7 +79,7 @@ describe('useGame', () => {
       guess('CRANE')
       type('SL')
       act(() => result.current.undo())
-      expect(result.current.entry).toEqual([])
+      expect(result.current.entry).toBe('')
       expect(guessWords()).toEqual(['CRANE'])
     })
 
@@ -88,19 +87,19 @@ describe('useGame', () => {
       const { result, guess, guessWords } = setup()
       guess('CRANE')
       guess('SLOTH')
-      const before = result.current.guesseds
+      const before = result.current.guesses
 
       act(() => result.current.undo())
       expect(guessWords()).toEqual(['CRANE'])
 
       act(() => result.current.redo())
-      expect(result.current.guesseds).toEqual(before)
+      expect(result.current.guesses).toEqual(before)
     })
 
     it('undo with no guesses does nothing', () => {
       const { result } = setup()
       act(() => result.current.undo())
-      expect(result.current.guesseds).toEqual([])
+      expect(result.current.guesses).toEqual([])
     })
 
     it('redo does nothing while an entry is being typed', () => {
@@ -136,14 +135,14 @@ describe('useGame', () => {
     const { result, guess } = setup()
     guess('CRANE')
     act(() => result.current.reset())
-    expect(result.current.guesseds).toEqual([])
+    expect(result.current.guesses).toEqual([])
   })
 })
 
 function fakeGame(overrides: Partial<Game> = {}): Game {
   return {
-    entry: [],
-    guesseds: [],
+    entry: '',
+    guesses: [],
     win: false,
     hardMode: false,
     reset: vi.fn(),

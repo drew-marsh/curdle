@@ -2,15 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   _wordleColoring,
   colorGuess,
-  Guessed,
+  Guess,
   isLetter,
-  Letter,
   makesValidWord,
 } from './logic'
 import { answerWords, guessWords } from './words'
-
-const letters = (word: string) => word.split('') as Letter[]
-const colors = (guessed: Guessed) => guessed.map(gl => gl.color)
 
 describe('isLetter', () => {
   it('accepts uppercase A-Z', () => {
@@ -28,12 +24,12 @@ describe('isLetter', () => {
 
 describe('makesValidWord', () => {
   it('accepts words in the guess list', () => {
-    expect(makesValidWord(letters('SPAIN'))).toBe(true)
+    expect(makesValidWord('SPAIN')).toBe(true)
   })
 
   it('rejects non-words and incomplete entries', () => {
-    expect(makesValidWord(letters('XXXXX'))).toBe(false)
-    expect(makesValidWord(letters('CRAN'))).toBe(false)
+    expect(makesValidWord('XXXXX')).toBe(false)
+    expect(makesValidWord('CRAN')).toBe(false)
   })
 })
 
@@ -91,55 +87,46 @@ describe('_wordleColoring', () => {
 })
 
 describe('colorGuess', () => {
-  it('keeps the guessed letters in order', () => {
-    const guessed = colorGuess(letters('SLATE'), [], ['CRANE'])
-    expect(guessed.map(gl => gl.letter).join('')).toBe('SLATE')
+  it('returns the guessed word', () => {
+    expect(colorGuess('SLATE', [], ['CRANE']).word).toBe('SLATE')
   })
 
   it('colors against the only possible answer', () => {
-    expect(colors(colorGuess(letters('SLATE'), [], ['CRANE']))).toEqual(
+    expect(colorGuess('SLATE', [], ['CRANE']).colors).toEqual(
       _wordleColoring('SLATE', 'CRANE')
     )
-    expect(colors(colorGuess(letters('CRANE'), [], ['CRANE']))).toEqual(
+    expect(colorGuess('CRANE', [], ['CRANE']).colors).toEqual(
       Array(5).fill('green')
     )
   })
 
   it('colors duplicate letters like wordle', () => {
-    expect(colors(colorGuess(letters('BOBBY'), [], ['ABBEY']))).toEqual(
+    expect(colorGuess('BOBBY', [], ['ABBEY']).colors).toEqual(
       _wordleColoring('BOBBY', 'ABBEY')
     )
   })
 
   it('picks the coloring shared by the most potential answers', () => {
     // SLATE and PLATE color CRANE the same way; SLOTH differs
-    const guessed = colorGuess(
-      letters('CRANE'),
-      [],
-      ['SLATE', 'SLOTH', 'PLATE']
-    )
-    expect(colors(guessed)).toEqual(_wordleColoring('CRANE', 'SLATE'))
+    const guessed = colorGuess('CRANE', [], ['SLATE', 'SLOTH', 'PLATE'])
+    expect(guessed.colors).toEqual(_wordleColoring('CRANE', 'SLATE'))
   })
 
   it('avoids a win when tied with another coloring', () => {
-    const guessed = colorGuess(letters('CRANE'), [], ['CRANE', 'SLOTH'])
-    expect(colors(guessed)).toEqual(_wordleColoring('CRANE', 'SLOTH'))
+    const guessed = colorGuess('CRANE', [], ['CRANE', 'SLOTH'])
+    expect(guessed.colors).toEqual(_wordleColoring('CRANE', 'SLOTH'))
   })
 
   it('only considers answers consistent with previous guesses', () => {
     // without the previous guess, SLATE and PLATE would outvote CRANE
-    const previous = colorGuess(letters('SLOTH'), [], ['CRANE'])
-    const guessed = colorGuess(
-      letters('CRANE'),
-      [previous],
-      ['SLATE', 'PLATE', 'CRANE']
-    )
-    expect(colors(guessed)).toEqual(Array(5).fill('green'))
+    const previous = colorGuess('SLOTH', [], ['CRANE'])
+    const guessed = colorGuess('CRANE', [previous], ['SLATE', 'PLATE', 'CRANE'])
+    expect(guessed.colors).toEqual(Array(5).fill('green'))
   })
 
   it('throws when no answer fits the previous guesses', () => {
-    const previous = colorGuess(letters('CRANE'), [], ['CRANE'])
-    expect(() => colorGuess(letters('SLATE'), [previous], ['SLATE'])).toThrow()
+    const previous = colorGuess('CRANE', [], ['CRANE'])
+    expect(() => colorGuess('SLATE', [previous], ['SLATE'])).toThrow()
   })
 
   it('always leaves at least one answer consistent with every coloring', () => {
@@ -151,18 +138,15 @@ describe('colorGuess', () => {
     }
 
     for (let game = 0; game < 10; game++) {
-      const guesseds: Guessed[] = []
+      const guesses: Guess[] = []
       for (let turn = 0; turn < 6; turn++) {
         const guess = guessWords[Math.floor(random() * guessWords.length)]
-        guesseds.push(colorGuess(letters(guess), guesseds, answerWords))
+        guesses.push(colorGuess(guess, guesses, answerWords))
 
         const consistent = answerWords.some(answer =>
-          guesseds.every(
-            guessed =>
-              JSON.stringify(colors(guessed)) ===
-              JSON.stringify(
-                _wordleColoring(guessed.map(gl => gl.letter).join(''), answer)
-              )
+          guesses.every(
+            ({ word, colors }) =>
+              colors.join() === _wordleColoring(word, answer).join()
           )
         )
         expect(consistent).toBe(true)

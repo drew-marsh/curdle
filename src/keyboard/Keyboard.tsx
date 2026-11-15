@@ -1,14 +1,14 @@
-import { alphabet, Guessed, KeyColor, Letter, LetterColor } from '../logic'
-import { letterToCardColorMap } from '../ui/colors'
+import { alphabet, Guess, Letter } from '../logic'
+import { KeyColor } from '../ui/colors'
 import { BackspaceKey } from './BackspaceKey'
 import { EnterKey } from './EnterKey'
 import { LetterKey } from './LetterKey'
 
 export function Keyboard(props: {
-  guesseds: Guessed[]
+  guesses: Guess[]
   handleKey: (key: string) => void
 }) {
-  const coloring = keyboardColoring(props.guesseds)
+  const coloring = keyboardColoring(props.guesses)
 
   return (
     <div className="flex w-full flex-col space-y-1 p-2 pb-4">
@@ -31,39 +31,35 @@ export function Keyboard(props: {
 
 function keysFromLetters(
   letters: string,
-  coloring: Record<Letter, KeyColor>,
+  coloring: Record<string, KeyColor>,
   handleKey: (key: string) => void
 ) {
   return (letters.split('') as Letter[]).map(letter => (
     <LetterKey
       letter={letter}
-      color={letterToCardColorMap[coloring[letter]]}
+      color={coloring[letter]}
       key={letter}
       onClick={() => handleKey(letter)}
     />
   ))
 }
 
-function keyboardColoring(guesseds: Guessed[]) {
-  const letterMap = Object.fromEntries(
-    alphabet.map(letter => [letter, 'lightgrey'])
+const colorPriority: KeyColor[] = ['unused', 'grey', 'yellow', 'green']
+
+// each key shows the best color its letter has received in any guess
+function keyboardColoring(guesses: Guess[]) {
+  const coloring: Record<string, KeyColor> = Object.fromEntries(
+    alphabet.map(letter => [letter, 'unused'])
   )
-  const guessedLetters = guesseds.flat()
-
-  addColorToKeyboard(guessedLetters, letterMap, 'grey')
-  addColorToKeyboard(guessedLetters, letterMap, 'yellow')
-  addColorToKeyboard(guessedLetters, letterMap, 'green')
-
-  return letterMap as Record<Letter, KeyColor>
-}
-
-function addColorToKeyboard(
-  guessedLetters: Guessed,
-  letterMap: { [k: string]: string },
-  color: LetterColor
-) {
-  const lettersThatColor = new Set(
-    guessedLetters.filter(l => l.color === color).map(gl => gl.letter)
-  )
-  lettersThatColor.forEach(letter => (letterMap[letter] = color))
+  for (const { word, colors } of guesses) {
+    colors.forEach((color, index) => {
+      const letter = word[index]
+      if (
+        colorPriority.indexOf(color) > colorPriority.indexOf(coloring[letter])
+      ) {
+        coloring[letter] = color
+      }
+    })
+  }
+  return coloring
 }
