@@ -1,4 +1,4 @@
-import { CardColor, cardColors } from '../data/types'
+import { CardColor, cardColors } from './colors'
 
 export function LetterCard(props: {
   letter?: string

@@ -1,9 +1,4 @@
-import { Letter } from './letters'
-
-export type LetterColor = 'green' | 'yellow' | 'grey'
-export type KeyColor = LetterColor | 'lightgrey'
-type GuessedLetter = { letter: Letter; color: LetterColor }
-export type Guessed = GuessedLetter[]
+import { KeyColor } from '../logic'
 
 export type CardColor =
   | 'green'

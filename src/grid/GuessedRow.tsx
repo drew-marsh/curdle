@@ -1,5 +1,6 @@
-import { Guessed, letterToCardColorMap } from '../data/types'
-import { LetterCard } from './LetterCard'
+import { Guessed } from '../logic'
+import { letterToCardColorMap } from '../ui/colors'
+import { LetterCard } from '../ui/LetterCard'
 
 export function GuessedRow(props: { guessed: Guessed }) {
   return (

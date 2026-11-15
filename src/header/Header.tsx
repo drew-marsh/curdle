@@ -1,9 +1,9 @@
-import { HelpOutline } from '../icons'
+import { HelpOutline } from '../ui/icons'
 import React, { useState } from 'react'
-import { LetterCard } from '../grid/LetterCard'
+import { LetterCard } from '../ui/LetterCard'
 import { Info } from './Info'
 import { twMerge } from 'tailwind-merge'
-import { Game } from './use-game'
+import { Game } from '../hooks'
 
 type HeaderProps = {
   game: Game

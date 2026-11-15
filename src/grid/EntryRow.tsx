@@ -1,7 +1,7 @@
-import { guessWords } from '../data/guess-words'
-import { Letter } from '../data/letters'
-import { CardColor } from '../data/types'
-import { LetterCard } from './LetterCard'
+import { Letter } from '../logic'
+import { CardColor } from '../ui/colors'
+import { LetterCard } from '../ui/LetterCard'
+import { guessWords } from '../words'
 
 export function EntryRow(props: { entry: Letter[] }) {
   return (

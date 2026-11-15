@@ -1,5 +1,5 @@
-import { LetterCard } from '../grid/LetterCard'
-import { Game } from './use-game'
+import { LetterCard } from '../ui/LetterCard'
+import { Game } from '../hooks'
 
 export function Win(props: { game: Game }) {
   const { game } = props

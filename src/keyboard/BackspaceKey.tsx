@@ -1,4 +1,4 @@
-import { BackspaceOutlined } from '../icons'
+import { BackspaceOutlined } from '../ui/icons'
 import { KeyboardButton } from './KeyboardButton'
 
 export function BackspaceKey(props: React.ComponentProps<'button'>) {

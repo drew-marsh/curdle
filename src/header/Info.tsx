@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { LetterCard } from '../grid/LetterCard'
+import { LetterCard } from '../ui/LetterCard'
 
 export function Info(props: {
   visible: boolean

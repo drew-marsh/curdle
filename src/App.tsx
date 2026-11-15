@@ -1,9 +1,8 @@
-import { GameGrid } from '../grid/GameGrid'
-import { Keyboard } from '../keyboard/Keyboard'
-import { Header } from './Header'
-import { Win } from './Win'
-import { useGame } from './use-game'
-import { getKeyHandler, useKeyDownListener } from './use-keydown-listener'
+import { GameGrid } from './grid/GameGrid'
+import { Keyboard } from './keyboard/Keyboard'
+import { Header } from './header/Header'
+import { Win } from './header/Win'
+import { getKeyHandler, useGame, useKeyDownListener } from './hooks'
 
 function App() {
   const game = useGame()

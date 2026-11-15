@@ -1,13 +1,9 @@
-import { useState } from 'react'
-import { Letter } from '../data/letters'
-import { Guessed } from '../data/types'
-import { answerWords } from '../data/answer-words'
-import { guessWords } from '../data/guess-words'
-import { colorGuess } from '../logic/color-guess'
-import { makesValidWord } from '../logic/makes-valid-word'
+import { useEffect, useState } from 'react'
+import { colorGuess, Guessed, isLetter, Letter, makesValidWord } from './logic'
+import { answerWords, guessWords } from './words'
 
 export function useGame() {
-  const [entry, addLetter, removeLetter, clearEntry] = useEntry()
+  const { entry, addLetter, removeLetter, clearEntry } = useEntry()
   const {
     guesseds,
     addGuessed,
@@ -133,10 +129,48 @@ function useEntry() {
     setEntry([])
   }
 
-  return [entry, addLetter, removeLetter, clearEntry] as [
-    typeof entry,
-    typeof addLetter,
-    typeof removeLetter,
-    typeof clearEntry,
-  ]
+  return { entry, addLetter, removeLetter, clearEntry }
+}
+
+export function useKeyDownListener(game: Game) {
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.altKey || e.ctrlKey) {
+      return
+    }
+
+    getKeyHandler(game)(e.key)
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeydown)
+    return () => {
+      document.removeEventListener('keydown', handleKeydown)
+    }
+  })
+}
+
+export function getKeyHandler(game: Game) {
+  const { win, reset, addLetter, removeLetter, submitEntry, undo, redo } = game
+  return function (key: string) {
+    const keyUpper = key.toUpperCase()
+    if (isLetter(keyUpper)) {
+      addLetter(keyUpper)
+    }
+    if (key === 'Backspace') {
+      removeLetter()
+    }
+    if (key === 'Enter') {
+      if (win) {
+        reset()
+        return
+      }
+      submitEntry()
+    }
+    if (key === 'ArrowLeft') {
+      undo()
+    }
+    if (key === 'ArrowRight') {
+      redo()
+    }
+  }
 }

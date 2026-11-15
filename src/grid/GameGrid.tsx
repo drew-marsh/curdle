@@ -1,4 +1,4 @@
-import { Game } from '../app/use-game'
+import { Game } from '../hooks'
 import { EntryRow } from './EntryRow'
 import { GuessedRow } from './GuessedRow'
 

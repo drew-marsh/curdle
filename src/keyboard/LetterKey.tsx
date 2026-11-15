@@ -1,5 +1,5 @@
-import { Letter } from '../data/letters'
-import { CardColor } from '../data/types'
+import { Letter } from '../logic'
+import { CardColor } from '../ui/colors'
 import { KeyboardButton } from './KeyboardButton'
 
 export function LetterKey(

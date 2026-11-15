@@ -1,5 +1,5 @@
 import { twMerge } from 'tailwind-merge'
-import { CardColor, cardColors } from '../data/types'
+import { CardColor, cardColors } from '../ui/colors'
 
 export function KeyboardButton(
   props: React.ComponentProps<'button'> & {

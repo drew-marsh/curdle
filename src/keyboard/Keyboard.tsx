@@ -1,10 +1,5 @@
-import { Letter, alphabet } from '../data/letters'
-import {
-  Guessed,
-  KeyColor,
-  LetterColor,
-  letterToCardColorMap,
-} from '../data/types'
+import { alphabet, Guessed, KeyColor, Letter, LetterColor } from '../logic'
+import { letterToCardColorMap } from '../ui/colors'
 import { BackspaceKey } from './BackspaceKey'
 import { EnterKey } from './EnterKey'
 import { LetterKey } from './LetterKey'
