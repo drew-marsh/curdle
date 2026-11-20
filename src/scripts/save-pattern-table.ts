@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
-import { buildPatternTable, patternTablePath } from '../minimax/patterns'
+import { buildPatternTable, patternTablePath } from '../minimax/pattern'
 import { answerWords, guessWords } from '../words'
 
 const start = performance.now()

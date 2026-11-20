@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { partition } from './minimax'
-import { allGreen, patternOf, patternTable } from './patterns'
+import { allGreen, patternOf, patternTable } from './pattern'
 import { answerWords as allAnswerWords } from '../words'
 
 const guessWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY', 'BOBBY']

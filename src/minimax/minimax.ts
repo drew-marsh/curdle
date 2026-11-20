@@ -1,4 +1,4 @@
-import { PatternLookup } from './patterns'
+import { PatternLookup } from './pattern'
 
 export type Partition = { pattern: number; answerSet: number[] }
 

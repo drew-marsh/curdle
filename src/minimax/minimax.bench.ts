@@ -1,6 +1,6 @@
 import { test } from 'vitest'
 import { partition } from './minimax'
-import { patternTable } from './patterns'
+import { patternTable } from './pattern'
 import { answerWords } from '../words'
 
 const answerIndices = answerWords.map((_, index) => index)

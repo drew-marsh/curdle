@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { patternOf, patternTable } from './patterns'
+import { patternOf, patternTable } from './pattern'
 
 const guessWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY', 'BOBBY']
 const answerWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY']
