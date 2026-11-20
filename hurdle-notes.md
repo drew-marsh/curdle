@@ -1,4 +1,3 @@
-
 # nodes:
 
 (GP)^D
@@ -14,7 +13,7 @@ P - 243 possible patterns
 
 D - 5 max guesses solved elsewhere
 
-G*A = 34M guess-answer colorings
+G*A = 34M guess-answer patterns
 
 # log
 
@@ -60,3 +59,19 @@ choosePattern(answerSet, guess) : Pattern {
   } return pattern w/max guesses
 }
 ```
+
+## 2
+
+- goal: precompute all patterns (obvious improvement)
+- 34M patterns
+- pattern is array - 5 strings up to 6 chars each = 30 bytes
+- 850 MB
+- size problem. solution: encode
+- pattern can encode as 5-digit base 3, max 243 conveniently fits in 1 byte
+- 34MB
+- save pattern as #
+- create pattern table indexed by answerIndex*numGuessWords + guessIndex
+- 10s for whole answer/guess list
+- store as file for now
+- new bench for partition: 1.8 -> .04 ms
+- estimated time: 800 quintillion years (much faster)

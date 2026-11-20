@@ -80,15 +80,12 @@ export function _wordleColoring(guess: string, answer: string): Color[] {
 // narrow the full answer list, guess by guess, to the answers that would have
 // produced each guess's colors
 function getPotentialAnswers(guesses: Guess[], answerList: string[]) {
-  return guesses.reduce(
-    (answers, { word, colors }) => {
-      const pattern = colors.join()
-      return answers.filter(
-        answer => _wordleColoring(word, answer).join() === pattern
-      )
-    },
-    answerList
-  )
+  return guesses.reduce((answers, { word, colors }) => {
+    const pattern = colors.join()
+    return answers.filter(
+      answer => _wordleColoring(word, answer).join() === pattern
+    )
+  }, answerList)
 }
 
 const allGreen = 'green,green,green,green,green'
