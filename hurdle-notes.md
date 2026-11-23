@@ -13,7 +13,7 @@ P - 243 possible patterns
 
 D - 5 max guesses solved elsewhere
 
-G*A = 34M guess-answer patterns
+G\*A = 34M guess-answer patterns
 
 # log
 
@@ -53,8 +53,8 @@ guessesNeeded(set){
 }
 
 choosePattern(answerSet, guess) : Pattern {
-  partition answerSet by pattern for guess -> outcomes
-  foreach {pattern, set} of outcomes {
+  partition answerSet by pattern for guess
+  foreach {pattern, set} {
     guessesNeeded(set)
   } return pattern w/max guesses
 }
@@ -70,8 +70,23 @@ choosePattern(answerSet, guess) : Pattern {
 - pattern can encode as 5-digit base 3, max 243 conveniently fits in 1 byte
 - 34MB
 - save pattern as #
-- create pattern table indexed by answerIndex*numGuessWords + guessIndex
+- create pattern table indexed by answerIndex\*numGuessWords + guessIndex
 - 10s for whole answer/guess list
 - store as file for now
 - new bench for partition: 1.8 -> .04 ms
 - estimated time: 800 quintillion years (much faster)
+
+## 3
+
+- naive implementation
+- ideas:
+  - choosePattern:
+    - sort options by heuristic (bucket size?) for likely early find & tie-breaker
+    - fail fast on other options when solvable(maxGuesses)
+  - solvable:
+    - failfast: set 2, guesses 2
+    - failfast: separable, guesses 2
+    - sort guesses? not sure if there's a good heuristic
+  - partition:
+    - map seems expensive
+  - count node visits

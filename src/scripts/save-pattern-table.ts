@@ -1,11 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { buildPatternTable, patternTablePath } from '../minimax/pattern'
-import { answerWords, guessWords } from '../words'
+import { patternTablePath, savePatternTable } from '../minimax/pattern-io'
 
 const start = performance.now()
-const patternTable = buildPatternTable(guessWords, answerWords)
-mkdirSync(new URL('.', patternTablePath), { recursive: true })
-writeFileSync(patternTablePath, patternTable)
+const patternTable = savePatternTable()
 const seconds = ((performance.now() - start) / 1000).toFixed(1)
 console.log(
   `wrote ${patternTable.byteLength} bytes to ${patternTablePath.pathname} in ${seconds}s`
