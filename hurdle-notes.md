@@ -1,31 +1,4 @@
-# nodes:
-
-(GP)^D
-= 6e32 (600 nonillion)
-
-# constants
-
-G - 15_000
-
-A - 2000
-
-P - 243 possible patterns
-
-D - 5 max guesses solved elsewhere
-
-G\*A = 34M guess-answer patterns
-
-# log
-
-## 1
-
-- worked out naive algo.
-- Most time will likely be spent in partition function.
-- benchmarked partition @ 1.8ms / guess for all answers
-- nodes to visit: (PG)^D = 6e32
-- total time: 36 sextillion years (yes really)
-
-algorithm:
+# algorithm
 
 ```
 partition(answerSet, guess) : {pattern, set} {
@@ -60,6 +33,33 @@ choosePattern(answerSet, guess) : Pattern {
 }
 ```
 
+# nodes:
+
+(GP)^D
+= 6e32 (600 nonillion)
+
+# constants
+
+G - 15_000
+
+A - 2000
+
+P - 243 possible patterns
+
+D - 5 max guesses solved elsewhere
+
+G\*A = 34M guess-answer patterns
+
+# log
+
+## 1
+
+- worked out naive algo.
+- Most time will likely be spent in partition function.
+- benchmarked partition @ 1.8ms / guess for all answers
+- nodes to visit: (PG)^D = 6e32
+- total time: 36 sextillion years (yes really)
+
 ## 2
 
 - goal: precompute all patterns (obvious improvement)
@@ -90,3 +90,15 @@ choosePattern(answerSet, guess) : Pattern {
   - partition:
     - map seems expensive
   - count node visits
+
+## 4
+
+- optimize choosePattern a bit.
+- count node visits & run some benchmarks:
+
+| set                      | size | guesses |   time | guess nodes |   set nodes |
+| ------------------------ | ---: | ------: | -----: | ----------: | ----------: |
+| \_ATCH                   |    7 |       3 |  0.10s |     135,480 |      90,116 |
+| \_IGHT                   |    9 |       3 |  1.03s |   2,254,212 |   2,656,156 |
+| \_IGHT + \_OUND          |   17 |       3 | 18.91s |  49,121,167 |  58,407,756 |
+| \_IGHT + \_OUND + \_ATCH |   24 |       4 | 87.94s | 224,240,990 | 269,853,396 |
