@@ -193,8 +193,8 @@ describe('choosePattern', () => {
     expect(() => choosePattern('CRANE', [])).toThrow()
   })
 
-  it('gives the only pattern for a single answer', () => {
-    expect(choosePattern('CRANE', ['SLOTH'])).toBe(patternOf('CRANE', 'SLOTH'))
+  it('gives all green when last answer is guessed', () => {
+    expect(choosePattern('CRANE', ['CRANE'])).toBe(allGreen)
   })
 
   it('picks the pattern that leaves the most guesses', () => {
