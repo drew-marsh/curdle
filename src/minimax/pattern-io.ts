@@ -3,7 +3,7 @@ import { answerWords, guessWords } from '../words'
 import { buildPatternTable } from './pattern'
 
 export const patternTablePath = new URL(
-  '../data/pattern-table.bin',
+  '../../data/pattern-table.bin',
   import.meta.url
 )
 

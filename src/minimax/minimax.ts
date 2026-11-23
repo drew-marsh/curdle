@@ -33,8 +33,6 @@ export function makeMinimax(
   const guessIndex = makeWordIndex(guessWords)
   const answerIndex = makeWordIndex(answerWords)
 
-  // scratch slot per pattern (0..allGreen); every slot is cleared again
-  // before partition returns, so recursive callers can share it
   const groupByPattern: (Partition | undefined)[] = new Array(allGreen + 1)
 
   function partition(answerSet: number[], guess: number): Partition[] {
