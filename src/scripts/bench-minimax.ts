@@ -45,13 +45,17 @@ const minimax = makeMinimax(
   lookupFromTable(loadPatternTable(), guessWords.length)
 )
 
-console.log('set                     size  guesses  time')
+console.log(
+  'set                     size  guesses     time   guess nodes     set nodes'
+)
 for (const { name, words, expected } of sets) {
+  minimax.nodeVisits.guess = 0
+  minimax.nodeVisits.set = 0
   const start = performance.now()
   const guesses = minimax.guessesNeeded(words.map(minimax.answerIndex))
   const seconds = ((performance.now() - start) / 1000).toFixed(2)
   const note = guesses === expected ? '' : `  (expected ${expected})`
   console.log(
-    `${name.padEnd(22)}  ${String(words.length).padStart(4)}  ${String(guesses).padStart(7)}  ${seconds.padStart(6)}s${note}`
+    `${name.padEnd(22)}  ${String(words.length).padStart(4)}  ${String(guesses).padStart(7)}  ${seconds.padStart(7)}s  ${minimax.nodeVisits.guess.toLocaleString().padStart(12)}  ${minimax.nodeVisits.set.toLocaleString().padStart(12)}${note}`
   )
 }

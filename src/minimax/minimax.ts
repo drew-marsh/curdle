@@ -33,6 +33,9 @@ export function makeMinimax(
   const guessIndex = makeWordIndex(guessWords)
   const answerIndex = makeWordIndex(answerWords)
 
+  // guess nodes are guessSolves calls, set nodes are solvable calls
+  const nodeVisits = { guess: 0, set: 0 }
+
   const groupByPattern: (Partition | undefined)[] = new Array(allGreen + 1)
 
   function partition(answerSet: number[], guess: number): Partition[] {
@@ -56,6 +59,7 @@ export function makeMinimax(
     answerSet: number[],
     numGuesses: number
   ): boolean {
+    nodeVisits.guess++
     // redundant at time of writing
     if (numGuesses < 1) {
       throw new Error(`bad state: ${numGuesses}`)
@@ -72,6 +76,7 @@ export function makeMinimax(
   }
 
   function solvable(answerSet: number[], numGuesses: number): boolean {
+    nodeVisits.set++
     if (numGuesses < 1 || answerSet.length < 1) {
       throw new Error(
         `bad state: ${JSON.stringify({ numGuesses, answers: answerSet.length })}`
@@ -142,6 +147,7 @@ export function makeMinimax(
     answerWords,
     answerIndex,
     lookupPattern,
+    nodeVisits,
     partition,
     solvable,
     guessesNeeded,
