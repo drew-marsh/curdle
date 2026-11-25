@@ -4,7 +4,7 @@ import {
   guessWords as allGuessWords,
 } from '../words'
 import { makeMinimax } from './minimax'
-import { allGreen, patternOf } from './pattern'
+import { ALL_GREEN, patternOf } from './pattern'
 
 const guessWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY', 'BOBBY']
 const answerWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY']
@@ -72,7 +72,7 @@ describe('partition', () => {
       guessIndex('CRANE')
     )
     expect(groups[1]).toEqual({
-      pattern: allGreen,
+      pattern: ALL_GREEN,
       answerSet: [answerIndex('CRANE')],
     })
   })
@@ -161,6 +161,45 @@ describe('solvable', () => {
   })
 })
 
+describe('separable', () => {
+  const isSeparable = (answers: string[]) =>
+    search.separable(answers.map(search.answerIndex))
+
+  it('separates a single answer', () => {
+    expect(isSeparable(['CRANE'])).toBe(true)
+  })
+
+  it('separates two answers', () => {
+    // guessing either one gives all green for it and something else for the other
+    expect(isSeparable(['SLATE', 'PLATE'])).toBe(true)
+  })
+
+  it('separates answers one guess colors all differently', () => {
+    expect(isSeparable(['CRANE', 'SLOTH', 'ABBEY'])).toBe(true)
+  })
+
+  it('does not separate the _ATCH trap', () => {
+    expect(isSeparable(atch)).toBe(false)
+  })
+
+  it('agrees with solvable in two guesses', () => {
+    // in two guesses every group after the first guess must be one answer
+    const sets = [
+      ['CRANE'],
+      ['SLATE', 'PLATE'],
+      ['CRANE', 'SLOTH', 'ABBEY'],
+      ['SLOTH', 'SLATE', 'PLATE'],
+      searchAnswers,
+      atch,
+      atch.slice(0, 3),
+    ]
+    for (const answers of sets) {
+      const answerSet = answers.map(search.answerIndex)
+      expect(search.separable(answerSet)).toBe(search.solvable(answerSet, 2))
+    }
+  })
+})
+
 describe('guessesNeeded', () => {
   const guessesNeeded = (answers: string[]) =>
     search.guessesNeeded(answers.map(search.answerIndex))
@@ -194,7 +233,7 @@ describe('choosePattern', () => {
   })
 
   it('gives all green when last answer is guessed', () => {
-    expect(choosePattern('CRANE', ['CRANE'])).toBe(allGreen)
+    expect(choosePattern('CRANE', ['CRANE'])).toBe(ALL_GREEN)
   })
 
   it('picks the pattern that leaves the most guesses', () => {

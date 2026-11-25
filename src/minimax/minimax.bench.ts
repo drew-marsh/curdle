@@ -44,3 +44,30 @@ test('partition every guess', async ({ bench }) => {
     }
   }).run()
 })
+
+// separable answers "solvable in 2?" without the full search, so compare the
+// two on a set that is separable and one that isn't
+const ATCH = ['BATCH', 'CATCH', 'HATCH', 'LATCH', 'MATCH', 'PATCH', 'WATCH']
+const separableAnswers = answerWords.slice(0, 10)
+const twoGuess = makeMinimax(guessWords, [...ATCH, ...separableAnswers])
+const separableSets = [
+  {
+    name: `first ${separableAnswers.length} answers (separable)`,
+    words: separableAnswers,
+  },
+  { name: `_ATCH (not separable)`, words: ATCH },
+]
+
+for (const { name, words } of separableSets) {
+  const answerSet = words.map(twoGuess.answerIndex)
+  test(`separable: ${name}`, async ({ bench }) => {
+    await bench.compare(
+      bench('separable', () => {
+        twoGuess.separable(answerSet)
+      }),
+      bench('solvable in 2', () => {
+        twoGuess.solvable(answerSet, 2)
+      })
+    )
+  })
+}

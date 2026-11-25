@@ -2,7 +2,8 @@ const GREY = 0
 const YELLOW = 1
 const GREEN = 2
 
-export const allGreen = 242
+export const PATTERNS = 243
+export const ALL_GREEN = 242
 
 export function patternOf(guess: string, answer: string): number {
   const digits: number[] = Array(5).fill(GREY)

@@ -102,3 +102,15 @@ G\*A = 34M guess-answer patterns
 | \_IGHT                   |    9 |       3 |  1.03s |   2,254,212 |   2,656,156 |
 | \_IGHT + \_OUND          |   17 |       3 | 18.91s |  49,121,167 |  58,407,756 |
 | \_IGHT + \_OUND + \_ATCH |   24 |       4 | 87.94s | 224,240,990 | 269,853,396 |
+
+## 5
+
+- add optimization: if 2 guesses, 2 answers, solvable
+  - only makes .0001% difference in bench script node visits. expected more
+- add separable function
+  - idea is, if there's a guess that separates the answer set into subsets of 1, it's solvable in 2
+  - hopefully this is more efficient than splitting
+  - hopefully this saves more node visits than the last idea
+  - iterate through answers, look up pattern, stop at first collision
+  - use generation counter to avoid allocating
+  - result: separable benchmarks at 20-30x faster than solvable in 2

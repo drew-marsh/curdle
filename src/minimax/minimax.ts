@@ -1,5 +1,5 @@
 import {
-  allGreen,
+  ALL_GREEN,
   buildPatternTable,
   lookupFromTable,
   PatternLookup,
@@ -36,7 +36,7 @@ export function makeMinimax(
   // guess nodes are guessSolves calls, set nodes are solvable calls
   const nodeVisits = { guess: 0, set: 0 }
 
-  const groupByPattern: (Partition | undefined)[] = new Array(allGreen + 1)
+  const groupByPattern: (Partition | undefined)[] = new Array(ALL_GREEN + 1)
 
   function partition(answerSet: number[], guess: number): Partition[] {
     const groups: Partition[] = []
@@ -75,6 +75,30 @@ export function makeMinimax(
     return subsets.every(({ answerSet }) => solvable(answerSet, numGuesses - 1))
   }
 
+  let generation = 0
+  const stamps = Array.from({ length: ALL_GREEN + 1 }).fill(0)
+
+  // is there a guess that splits the answer set into subsets of 1?
+  // if so it's solvable in 2
+  function separable(answerSet: number[]): boolean {
+    for (let g = 0; g < guessWords.length; g++) {
+      let collided = false
+      generation++
+      for (let a = 0; a < answerSet.length; a++) {
+        const pattern = lookupPattern(g, answerSet[a])
+        if (stamps[pattern] === generation) {
+          collided = true
+          break
+        }
+        stamps[pattern] = generation
+      }
+      if (!collided) {
+        return true
+      }
+    }
+    return false
+  }
+
   function solvable(answerSet: number[], numGuesses: number): boolean {
     nodeVisits.set++
     if (numGuesses < 1 || answerSet.length < 1) {
@@ -89,6 +113,10 @@ export function makeMinimax(
 
     if (numGuesses === 1) {
       return false
+    }
+
+    if (numGuesses === 2 && answerSet.length === 2) {
+      return true
     }
 
     return guessIndices.some(g => guessSolves(g, answerSet, numGuesses))
@@ -107,7 +135,7 @@ export function makeMinimax(
 
     // should mean all green
     if (options.length === 1) {
-      if (options[0].pattern !== allGreen) {
+      if (options[0].pattern !== ALL_GREEN) {
         throw new Error('only pattern option did not lead to solution 🤔')
       }
       return options[0].pattern
@@ -118,7 +146,7 @@ export function makeMinimax(
 
     for (let i = 0; i < options.length; i++) {
       const { answerSet: subset, pattern } = options[i]
-      if (pattern === allGreen) {
+      if (pattern === ALL_GREEN) {
         continue
       }
       const numGuesses = guessesNeeded(subset)
@@ -132,7 +160,7 @@ export function makeMinimax(
       throw new Error(`no pattern was chosen 🤔`)
     }
 
-    if (patternChoice === allGreen) {
+    if (patternChoice === ALL_GREEN) {
       throw new Error(
         `solution was chosen when multiple options were available 🤔`
       )
@@ -149,6 +177,7 @@ export function makeMinimax(
     lookupPattern,
     nodeVisits,
     partition,
+    separable,
     solvable,
     guessesNeeded,
     choosePattern,
