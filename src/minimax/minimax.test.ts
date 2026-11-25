@@ -120,8 +120,8 @@ describe('partition', () => {
   })
 })
 
-// solvable tries every word in the guess list, so its table needs the full
-// guess list. a few answers keep it small
+// solvable and splittable try every word in the guess list, so their table
+// needs the full guess list. a few answers keep it small
 const atch = ['BATCH', 'CATCH', 'HATCH', 'LATCH', 'MATCH', 'PATCH', 'WATCH']
 const searchAnswers = ['CRANE', 'SLOTH', 'ABBEY', 'SLATE', 'PLATE', ...atch]
 const search = makeMinimax(allGuessWords, searchAnswers)
@@ -161,6 +161,47 @@ describe('solvable', () => {
   })
 })
 
+describe('splittable', () => {
+  const isSplittable = (answers: string[], numGuesses: number) =>
+    search.splittable(answers.map(search.answerIndex), numGuesses)
+
+  it('cannot split a single answer', () => {
+    // no guess breaks one answer into more than one group. solvable handles
+    // single answers before trying to split
+    expect(isSplittable(['CRANE'], 2)).toBe(false)
+  })
+
+  it('splits two answers in two guesses', () => {
+    expect(isSplittable(['SLATE', 'PLATE'], 2)).toBe(true)
+  })
+
+  it('splits in two when one guess splits every answer apart', () => {
+    expect(isSplittable(['CRANE', 'SLOTH', 'ABBEY'], 2)).toBe(true)
+  })
+
+  it('needs three guesses for the _ATCH trap', () => {
+    expect(isSplittable(atch, 3)).toBe(true)
+    expect(isSplittable(atch, 2)).toBe(false)
+  })
+
+  it('agrees with solvable for more than one answer', () => {
+    const sets = [
+      ['SLATE', 'PLATE'],
+      ['CRANE', 'SLOTH', 'ABBEY'],
+      ['SLOTH', 'SLATE', 'PLATE'],
+      atch,
+    ]
+    for (const answers of sets) {
+      const answerSet = answers.map(search.answerIndex)
+      for (const numGuesses of [2, 3]) {
+        expect(search.splittable(answerSet, numGuesses)).toBe(
+          search.solvable(answerSet, numGuesses)
+        )
+      }
+    }
+  })
+})
+
 describe('separable', () => {
   const isSeparable = (answers: string[]) =>
     search.separable(answers.map(search.answerIndex))
@@ -180,23 +221,6 @@ describe('separable', () => {
 
   it('does not separate the _ATCH trap', () => {
     expect(isSeparable(atch)).toBe(false)
-  })
-
-  it('agrees with solvable in two guesses', () => {
-    // in two guesses every group after the first guess must be one answer
-    const sets = [
-      ['CRANE'],
-      ['SLATE', 'PLATE'],
-      ['CRANE', 'SLOTH', 'ABBEY'],
-      ['SLOTH', 'SLATE', 'PLATE'],
-      searchAnswers,
-      atch,
-      atch.slice(0, 3),
-    ]
-    for (const answers of sets) {
-      const answerSet = answers.map(search.answerIndex)
-      expect(search.separable(answerSet)).toBe(search.solvable(answerSet, 2))
-    }
   })
 })
 

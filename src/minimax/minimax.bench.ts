@@ -45,8 +45,8 @@ test('partition every guess', async ({ bench }) => {
   }).run()
 })
 
-// separable answers "solvable in 2?" without the full search, so compare the
-// two on a set that is separable and one that isn't
+// separable and splittable are two ways to answer "solvable in 2?"; compare
+// them on a set that is separable and one that isn't
 const ATCH = ['BATCH', 'CATCH', 'HATCH', 'LATCH', 'MATCH', 'PATCH', 'WATCH']
 const separableAnswers = answerWords.slice(0, 10)
 const twoGuess = makeMinimax(guessWords, [...ATCH, ...separableAnswers])
@@ -65,8 +65,8 @@ for (const { name, words } of separableSets) {
       bench('separable', () => {
         twoGuess.separable(answerSet)
       }),
-      bench('solvable in 2', () => {
-        twoGuess.solvable(answerSet, 2)
+      bench('splittable in 2', () => {
+        twoGuess.splittable(answerSet, 2)
       })
     )
   })

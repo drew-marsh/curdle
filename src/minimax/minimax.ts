@@ -78,8 +78,9 @@ export function makeMinimax(
   let generation = 0
   const stamps = Array.from({ length: ALL_GREEN + 1 }).fill(0)
 
+  // is it solvable by separation strategy?
+  // only applies when 2 guesses remain
   // is there a guess that splits the answer set into subsets of 1?
-  // if so it's solvable in 2
   function separable(answerSet: number[]): boolean {
     for (let g = 0; g < guessWords.length; g++) {
       let collided = false
@@ -97,6 +98,11 @@ export function makeMinimax(
       }
     }
     return false
+  }
+
+  // is it solvable with partitioning strategy
+  function splittable(answerSet: number[], numGuesses: number): boolean {
+    return guessIndices.some(g => guessSolves(g, answerSet, numGuesses))
   }
 
   function solvable(answerSet: number[], numGuesses: number): boolean {
@@ -119,7 +125,11 @@ export function makeMinimax(
       return true
     }
 
-    return guessIndices.some(g => guessSolves(g, answerSet, numGuesses))
+    if (numGuesses === 2) {
+      return separable(answerSet)
+    }
+
+    return splittable(answerSet, numGuesses)
   }
 
   function guessesNeeded(answerSet: number[]) {
@@ -178,6 +188,7 @@ export function makeMinimax(
     nodeVisits,
     partition,
     separable,
+    splittable,
     solvable,
     guessesNeeded,
     choosePattern,

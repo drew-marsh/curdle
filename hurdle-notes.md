@@ -108,9 +108,29 @@ G\*A = 34M guess-answer patterns
 - add optimization: if 2 guesses, 2 answers, solvable
   - only makes .0001% difference in bench script node visits. expected more
 - add separable function
-  - idea is, if there's a guess that separates the answer set into subsets of 1, it's solvable in 2
+  - to solve in 2, there must be a guess that separates the answer set into subsets of 1
+  - could be a big win because it removes a layer of partitioning from the tree
   - hopefully this is more efficient than splitting
   - hopefully this saves more node visits than the last idea
   - iterate through answers, look up pattern, stop at first collision
   - use generation counter to avoid allocating
   - result: separable benchmarks at 20-30x faster than solvable in 2
+
+| set                      | size | guesses | time  | guess nodes | set nodes |
+| ------------------------ | ---- | ------- | ----- | ----------- | --------- |
+| \_ATCH                   | 7    | 3       | 0.00s | 12          | 21        |
+| \_IGHT                   | 9    | 3       | 0.04s | 171         | 224       |
+| \_IGHT + \_OUND          | 17   | 3       | 0.78s | 3,302       | 4,854     |
+| \_IGHT + \_OUND + \_ATCH | 24   | 4       | 3.45s | 15,047      | 22,790    |
+
+WOW time for new benchmarks
+
+| set              | size | guesses |  time | guess nodes | set nodes |
+| ---------------- | ---: | ------: | ----: | ----------: | --------: |
+| \_ATCH           |    7 |       3 | 0.01s |          12 |        21 |
+| families of 6+   |   80 |       4 | 4.06s |      16,392 |    22,609 |
+| every 5th answer |  462 |       4 | 6.39s |      15,036 |    30,777 |
+
+- every 2nd answer comes in @ 250s
+- a poor guess QAJAQ leaves an answer set over half the table - so we're looking at 10s of minutes for response time
+- good progress!
