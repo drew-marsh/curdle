@@ -151,19 +151,22 @@ export function makeMinimax(
       return options[0].pattern
     }
 
+    // heuristic for tie-breaker: assume biggest set is the hardest
+    // also allows for fail-fast optimization
+    const candidates = options
+      .filter(({ pattern }) => pattern !== ALL_GREEN)
+      .sort((a, b) => b.answerSet.length - a.answerSet.length)
+
     let highestGuesses: number = 0
     let patternChoice: number | undefined = undefined
 
-    for (let i = 0; i < options.length; i++) {
-      const { answerSet: subset, pattern } = options[i]
-      if (pattern === ALL_GREEN) {
+    for (const { answerSet: subset, pattern } of candidates) {
+      if (patternChoice !== undefined && solvable(subset, highestGuesses)) {
         continue
       }
       const numGuesses = guessesNeeded(subset)
-      if (numGuesses > highestGuesses) {
-        highestGuesses = numGuesses
-        patternChoice = pattern
-      }
+      highestGuesses = numGuesses
+      patternChoice = pattern
     }
 
     if (patternChoice === undefined) {

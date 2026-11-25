@@ -132,5 +132,20 @@ WOW time for new benchmarks
 | every 5th answer |  462 |       4 | 6.39s |      15,036 |    30,777 |
 
 - every 2nd answer comes in @ 250s
-- a poor guess QAJAQ leaves an answer set over half the table - so we're looking at 10s of minutes for response time
 - good progress!
+
+## 6
+
+- a poor guess QAJAQ leaves an answer set over half the table - so we're looking at 10s of minutes for response time
+- a good guess, CRANE has largest group around 263 answers
+- will be less random than 'every 5th answer' but might still be reasonable to benchmark now
+
+| choosePattern | answers | pattern | left |   time | guess nodes | set nodes |
+| ------------- | ------: | ------: | ---: | -----: | ----------: | --------: |
+| CRANE         |    2309 |       9 |  133 | 83.77s |     219,783 |   374,350 |
+
+- added group-sorting optimization in choosePattern:
+
+| choosePattern | answers | pattern | left |   time | guess nodes | set nodes |
+| ------------- | ------: | ------: | ---: | -----: | ----------: | --------: |
+| CRANE         |    2309 |       0 |  263 | 52.82s |     151,897 |   247,868 |

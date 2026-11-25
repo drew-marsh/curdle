@@ -26,14 +26,10 @@ const ATCH = FAMILIES.filter(word => word.endsWith('ATCH'))
 // evenly spaced samples of the answer list: bigger, but mostly easy words
 const everyNth = (n: number) => answerWords.filter((_, i) => i % n === 0)
 
-// _ATCH's expected count is known; the others come from this search itself, so
-// they catch regressions rather than prove the search right. every 2nd
-// answer (1155) takes ~250s and the full list over 10 minutes, so they're
-// left out
-const sets: { name: string; words: string[]; expected: number }[] = [
-  { name: '_ATCH', words: ATCH, expected: 3 },
-  { name: 'families of 6+', words: FAMILIES, expected: 4 },
-  { name: 'every 5th answer', words: everyNth(5), expected: 4 },
+const sets: { name: string; words: string[] }[] = [
+  { name: '_ATCH', words: ATCH },
+  { name: 'families of 6+', words: FAMILIES },
+  { name: 'every 5th answer', words: everyNth(5) },
 ]
 
 const minimax = makeMinimax(
@@ -42,17 +38,78 @@ const minimax = makeMinimax(
   lookupFromTable(loadPatternTable(), guessWords.length)
 )
 
-console.log(
-  'set                     size  guesses     time   guess nodes     set nodes'
-)
-for (const { name, words, expected } of sets) {
+// prints a text table: columns padded to a width, the first left aligned and
+// the rest right. returns a function that prints one row
+function table(columns: [header: string, width: number][]) {
+  const line = (cells: (string | number)[], note = '') =>
+    console.log(
+      cells
+        .map((cell, i) =>
+          i === 0
+            ? String(cell).padEnd(columns[i][1])
+            : String(cell).padStart(columns[i][1])
+        )
+        .join('  ') + note
+    )
+  line(columns.map(([header]) => header))
+  return line
+}
+
+// a mismatch is noted after the row
+const timeSince = (start: number) =>
+  `${((performance.now() - start) / 1000).toFixed(2)}s`
+const nodeCounts = () => [
+  minimax.nodeVisits.guess.toLocaleString(),
+  minimax.nodeVisits.set.toLocaleString(),
+]
+const resetNodeVisits = () => {
   minimax.nodeVisits.guess = 0
   minimax.nodeVisits.set = 0
+}
+
+const setRow = table([
+  ['set', 22],
+  ['size', 4],
+  ['guesses', 7],
+  ['time', 8],
+  ['guess nodes', 12],
+  ['set nodes', 12],
+])
+for (const { name, words } of sets) {
+  resetNodeVisits()
   const start = performance.now()
   const guesses = minimax.guessesNeeded(words.map(minimax.answerIndex))
-  const seconds = ((performance.now() - start) / 1000).toFixed(2)
-  const note = guesses === expected ? '' : `  (expected ${expected})`
-  console.log(
-    `${name.padEnd(22)}  ${String(words.length).padStart(4)}  ${String(guesses).padStart(7)}  ${seconds.padStart(7)}s  ${minimax.nodeVisits.guess.toLocaleString().padStart(12)}  ${minimax.nodeVisits.set.toLocaleString().padStart(12)}${note}`
-  )
+  setRow([name, words.length, guesses, timeSince(start), ...nodeCounts()])
+}
+
+// CRANE is a known good guess - should be fast
+const choices = ['CRANE']
+
+console.log()
+const choiceRow = table([
+  ['choosePattern', 13],
+  ['answers', 7],
+  ['pattern', 7],
+  ['left', 4],
+  ['time', 8],
+  ['guess nodes', 12],
+  ['set nodes', 12],
+])
+for (const guess of choices) {
+  resetNodeVisits()
+  const start = performance.now()
+  const pattern = minimax.choosePattern(guess, answerWords)
+  const seconds = timeSince(start)
+  const guessIndex = minimax.guessIndex(guess)
+  const left = answerWords.filter(
+    (_, answer) => minimax.lookupPattern(guessIndex, answer) === pattern
+  ).length
+  choiceRow([
+    guess,
+    answerWords.length,
+    pattern,
+    left,
+    seconds,
+    ...nodeCounts(),
+  ])
 }
