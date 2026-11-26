@@ -102,7 +102,7 @@ export function makeMinimax(
   }
 
   // order guesses using heuristic: minimize largest partition size
-  function orderGuesses(answerSet: number[]): number[] {
+  function orderGuesses(answerSet: number[]) {
     const scores: number[] = guessIndices.map(g => {
       const counts: number[] = Array.from<number>({ length: PATTERNS }).fill(0)
       let largest = 0
@@ -120,7 +120,8 @@ export function makeMinimax(
 
   // is it solvable with partitioning strategy
   function splittable(answerSet: number[], numGuesses: number): boolean {
-    return guessIndices.some(g => guessSolves(g, answerSet, numGuesses))
+    const orderedGuesses = orderGuesses(answerSet)
+    return orderedGuesses.some(g => guessSolves(g, answerSet, numGuesses))
   }
 
   function solvable(answerSet: number[], numGuesses: number): boolean {

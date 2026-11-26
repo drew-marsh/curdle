@@ -158,4 +158,10 @@ WOW time for new benchmarks
   - try likely guesses first
 - strategy:
   - use curdle heuristic - minimize size of the largest partition
-- naive implementation: 200ms
+- naive implementation benchmarks @ 200ms
+- it slows down response overall but drastically reduces number of nodes
+- so, worth pursuing
+
+| choosePattern | answers | pattern | left |    time | guess nodes | set nodes |
+| ------------- | ------: | ------: | ---: | ------: | ----------: | --------: |
+| CRANE         |    2309 |       0 |  263 | 114.54s |      15,410 |    26,389 |
