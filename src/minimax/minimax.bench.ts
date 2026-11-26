@@ -45,6 +45,12 @@ test('partition every guess', async ({ bench }) => {
   }).run()
 })
 
+test('orderGuesses', async ({ bench }) => {
+  await bench(`order guesses for ${sampleAnswers.length} answers`, () => {
+    level.orderGuesses(sampleIndices)
+  }).run()
+})
+
 // separable and splittable are two ways to answer "solvable in 2?"; compare
 // them on a set that is separable and one that isn't
 const ATCH = ['BATCH', 'CATCH', 'HATCH', 'LATCH', 'MATCH', 'PATCH', 'WATCH']

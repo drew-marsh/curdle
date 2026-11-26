@@ -6,37 +6,37 @@ import {
 import { makeMinimax } from './minimax'
 import { ALL_GREEN, patternOf } from './pattern'
 
-const guessWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY', 'BOBBY']
-const answerWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY']
-const { lookupPattern, guessIndex, answerIndex, partition } = makeMinimax(
-  guessWords,
-  answerWords
-)
+const smallGuessWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY', 'BOBBY']
+const smallAnswerWords = ['CRANE', 'SLATE', 'SLOTH', 'PLATE', 'ABBEY']
+const smallMinimax = makeMinimax(smallGuessWords, smallAnswerWords)
 
 describe('guessIndex', () => {
   it('finds the first word', () => {
-    expect(guessIndex('CRANE')).toBe(0)
+    expect(smallMinimax.guessIndex('CRANE')).toBe(0)
   })
 
   it('throws for a word not in the list', () => {
-    expect(() => guessIndex('RAISE')).toThrow()
+    expect(() => smallMinimax.guessIndex('RAISE')).toThrow()
   })
 })
 
 describe('answerIndex', () => {
   it('indexes the answer list, not the guess list', () => {
-    expect(answerIndex('ABBEY')).toBe(4)
-    expect(() => answerIndex('BOBBY')).toThrow()
+    expect(smallMinimax.answerIndex('ABBEY')).toBe(4)
+    expect(() => smallMinimax.answerIndex('BOBBY')).toThrow()
   })
 })
 
 describe('lookupPattern', () => {
   it('matches patternOf for every guess and answer', () => {
-    for (const guess of guessWords) {
-      for (const answer of answerWords) {
-        expect(lookupPattern(guessIndex(guess), answerIndex(answer))).toBe(
-          patternOf(guess, answer)
-        )
+    for (const guess of smallGuessWords) {
+      for (const answer of smallAnswerWords) {
+        expect(
+          smallMinimax.lookupPattern(
+            smallMinimax.guessIndex(guess),
+            smallMinimax.answerIndex(answer)
+          )
+        ).toBe(patternOf(guess, answer))
       }
     }
   })
@@ -44,44 +44,51 @@ describe('lookupPattern', () => {
 
 describe('partition', () => {
   it('returns no groups for no answers', () => {
-    expect(partition([], guessIndex('CRANE'))).toEqual([])
+    expect(
+      smallMinimax.partition([], smallMinimax.guessIndex('CRANE'))
+    ).toEqual([])
   })
 
   it('groups answers that get the same pattern', () => {
     // SLATE and PLATE color CRANE the same way; SLOTH differs
     expect(
-      partition(
-        ['SLATE', 'SLOTH', 'PLATE'].map(answerIndex),
-        guessIndex('CRANE')
+      smallMinimax.partition(
+        ['SLATE', 'SLOTH', 'PLATE'].map(smallMinimax.answerIndex),
+        smallMinimax.guessIndex('CRANE')
       )
     ).toEqual([
       {
         pattern: patternOf('CRANE', 'SLATE'),
-        answerSet: ['SLATE', 'PLATE'].map(answerIndex),
+        answerSet: ['SLATE', 'PLATE'].map(smallMinimax.answerIndex),
       },
       {
         pattern: patternOf('CRANE', 'SLOTH'),
-        answerSet: [answerIndex('SLOTH')],
+        answerSet: [smallMinimax.answerIndex('SLOTH')],
       },
     ])
   })
 
   it('gives the guess itself an all-green group', () => {
-    const groups = partition(
-      ['SLOTH', 'CRANE'].map(answerIndex),
-      guessIndex('CRANE')
+    const groups = smallMinimax.partition(
+      ['SLOTH', 'CRANE'].map(smallMinimax.answerIndex),
+      smallMinimax.guessIndex('CRANE')
     )
     expect(groups[1]).toEqual({
       pattern: ALL_GREEN,
-      answerSet: [answerIndex('CRANE')],
+      answerSet: [smallMinimax.answerIndex('CRANE')],
     })
   })
 
   it('colors duplicate letters like wordle', () => {
-    expect(partition([answerIndex('ABBEY')], guessIndex('BOBBY'))).toEqual([
+    expect(
+      smallMinimax.partition(
+        [smallMinimax.answerIndex('ABBEY')],
+        smallMinimax.guessIndex('BOBBY')
+      )
+    ).toEqual([
       {
         pattern: patternOf('BOBBY', 'ABBEY'),
-        answerSet: [answerIndex('ABBEY')],
+        answerSet: [smallMinimax.answerIndex('ABBEY')],
       },
     ])
   })
@@ -117,6 +124,22 @@ describe('partition', () => {
       const firsts = groups.map(group => group.answerSet[0])
       expect(firsts).toEqual(firsts.slice().sort((x, y) => x - y))
     })
+  })
+})
+
+describe('order guesses', () => {
+  const { answerWords, answerIndex, guessIndex, orderGuesses } = smallMinimax
+  const answerSet = answerWords.map(answerIndex)
+  it('orders by largest bucket size then by order seen', () => {
+    const order = orderGuesses(answerSet)
+    expect(order).toEqual([
+      guessIndex('SLATE'),
+      guessIndex('PLATE'),
+      guessIndex('CRANE'),
+      guessIndex('SLOTH'),
+      guessIndex('ABBEY'),
+      guessIndex('BOBBY'),
+    ])
   })
 })
 

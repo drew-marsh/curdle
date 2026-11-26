@@ -149,3 +149,13 @@ WOW time for new benchmarks
 | choosePattern | answers | pattern | left |   time | guess nodes | set nodes |
 | ------------- | ------: | ------: | ---: | -----: | ----------: | --------: |
 | CRANE         |    2309 |       0 |  263 | 52.82s |     151,897 |   247,868 |
+
+## 7
+
+- order guesses
+- reasoning:
+  - splittable returns on first solvable guess
+  - try likely guesses first
+- strategy:
+  - use curdle heuristic - minimize size of the largest partition
+- naive implementation: 200ms

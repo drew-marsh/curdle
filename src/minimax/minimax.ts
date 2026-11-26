@@ -3,6 +3,7 @@ import {
   buildPatternTable,
   lookupFromTable,
   PatternLookup,
+  PATTERNS,
 } from './pattern'
 
 export function makeWordIndex(words: string[]): (word: string) => number {
@@ -100,6 +101,23 @@ export function makeMinimax(
     return false
   }
 
+  // order guesses using heuristic: minimize largest partition size
+  function orderGuesses(answerSet: number[]): number[] {
+    const scores: number[] = guessIndices.map(g => {
+      const counts: number[] = Array.from<number>({ length: PATTERNS }).fill(0)
+      let largest = 0
+      answerSet.forEach(a => {
+        const pattern = lookupPattern(g, a)
+        const count = ++counts[pattern]
+        if (count > largest) {
+          largest = count
+        }
+      })
+      return largest
+    })
+    return guessIndices.slice().sort((g1, g2) => scores[g1] - scores[g2])
+  }
+
   // is it solvable with partitioning strategy
   function splittable(answerSet: number[], numGuesses: number): boolean {
     return guessIndices.some(g => guessSolves(g, answerSet, numGuesses))
@@ -190,6 +208,7 @@ export function makeMinimax(
     lookupPattern,
     nodeVisits,
     partition,
+    orderGuesses,
     separable,
     splittable,
     solvable,
