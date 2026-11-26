@@ -3,35 +3,6 @@ import { loadPatternTable } from '../minimax/pattern-io'
 import { lookupFromTable } from '../minimax/pattern'
 import { answerWords, guessWords } from '../words'
 
-// every family of 6+ answers that differ in one letter. these are the hard
-// cases
-const FAMILIES = `
-  EIGHT FIGHT LIGHT MIGHT NIGHT RIGHT SIGHT TIGHT WIGHT
-  BOUND FOUND HOUND MOUND POUND ROUND SOUND WOUND
-  BATCH CATCH HATCH LATCH MATCH PATCH WATCH
-  COWER LOWER MOWER POWER ROWER SOWER TOWER
-  SHADE SHAKE SHALE SHAME SHAPE SHARE SHAVE
-  BASTE CASTE HASTE PASTE TASTE WASTE
-  BATTY CATTY FATTY PATTY RATTY TATTY
-  BILLY DILLY FILLY HILLY SILLY WILLY
-  DAUNT GAUNT HAUNT JAUNT TAUNT VAUNT
-  GRACE GRADE GRAPE GRATE GRAVE GRAZE
-  SCORE SHORE SNORE SPORE STORE SWORE
-  STAGE STAKE STALE STARE STATE STAVE
-`
-  .trim()
-  .split(/\s+/)
-const ATCH = FAMILIES.filter(word => word.endsWith('ATCH'))
-
-// evenly spaced samples of the answer list: bigger, but mostly easy words
-const everyNth = (n: number) => answerWords.filter((_, i) => i % n === 0)
-
-const sets: { name: string; words: string[] }[] = [
-  { name: '_ATCH', words: ATCH },
-  { name: 'families of 6+', words: FAMILIES },
-  { name: 'every 5th answer', words: everyNth(5) },
-]
-
 const minimax = makeMinimax(
   guessWords,
   answerWords,
@@ -65,21 +36,6 @@ const nodeCounts = () => [
 const resetNodeVisits = () => {
   minimax.nodeVisits.guess = 0
   minimax.nodeVisits.set = 0
-}
-
-const setRow = table([
-  ['set', 22],
-  ['size', 4],
-  ['guesses', 7],
-  ['time', 8],
-  ['guess nodes', 12],
-  ['set nodes', 12],
-])
-for (const { name, words } of sets) {
-  resetNodeVisits()
-  const start = performance.now()
-  const guesses = minimax.guessesNeeded(words.map(minimax.answerIndex))
-  setRow([name, words.length, guesses, timeSince(start), ...nodeCounts()])
 }
 
 // CRANE is a known good guess - should be fast

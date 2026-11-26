@@ -47,7 +47,7 @@ test('partition every guess', async ({ bench }) => {
 
 test('orderGuesses', async ({ bench }) => {
   await bench(`order guesses for ${sampleAnswers.length} answers`, () => {
-    level.orderGuesses(sampleIndices)
+    level.orderGuesses(sampleIndices, 3)
   }).run()
 })
 

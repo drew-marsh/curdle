@@ -101,26 +101,43 @@ export function makeMinimax(
     return false
   }
 
+  // reuse one set of arrays for each tree level
+  const levelOrderArrays = new Map<
+    number,
+    { guessScores: number[]; patternCounts: number[]; guessOrder: number[] }
+  >()
   // order guesses using heuristic: minimize largest partition size
-  function orderGuesses(answerSet: number[]) {
-    const scores: number[] = guessIndices.map(g => {
-      const counts: number[] = Array.from<number>({ length: PATTERNS }).fill(0)
+  function orderGuesses(answerSet: number[], numGuesses: number) {
+    let orderArrays = levelOrderArrays.get(numGuesses)
+    if (!orderArrays) {
+      orderArrays = {
+        guessScores: Array.from<number>({ length: guessWords.length }).fill(0),
+        patternCounts: Array.from<number>({ length: PATTERNS }).fill(0),
+        guessOrder: guessIndices.slice(),
+      }
+      levelOrderArrays.set(numGuesses, orderArrays)
+    }
+    const { guessScores, patternCounts, guessOrder } = orderArrays
+
+    guessIndices.forEach(g => {
+      patternCounts.fill(0)
       let largest = 0
       answerSet.forEach(a => {
         const pattern = lookupPattern(g, a)
-        const count = ++counts[pattern]
+        const count = ++patternCounts[pattern]
         if (count > largest) {
           largest = count
         }
       })
-      return largest
+      guessScores[g] = largest
     })
-    return guessIndices.slice().sort((g1, g2) => scores[g1] - scores[g2])
+
+    return guessOrder.sort((g1, g2) => guessScores[g1] - guessScores[g2])
   }
 
   // is it solvable with partitioning strategy
   function splittable(answerSet: number[], numGuesses: number): boolean {
-    const orderedGuesses = orderGuesses(answerSet)
+    const orderedGuesses = orderGuesses(answerSet, numGuesses)
     return orderedGuesses.some(g => guessSolves(g, answerSet, numGuesses))
   }
 

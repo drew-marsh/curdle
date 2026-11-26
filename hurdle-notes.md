@@ -165,3 +165,23 @@ WOW time for new benchmarks
 | choosePattern | answers | pattern | left |    time | guess nodes | set nodes |
 | ------------- | ------: | ------: | ---: | ------: | ----------: | --------: |
 | CRANE         |    2309 |       0 |  263 | 114.54s |      15,410 |    26,389 |
+
+## 8
+
+- optimize orderGuesses
+- reuse arrays to avoid allocating: down to 8ms
+
+choosePattern answers pattern left time guess nodes set nodes
+CRANE 2309 0 263 8.12s 15,416 26,404
+
+- 8s is getting close to usable! I tested a slow guess, QAJAQ, which still took 200s
+- added cpu profiling. hot paths found:
+  - separable
+    - honestly pretty optimized already
+  - orderGuesses
+    - avoid nlogn sort - could use O(n) counting sort
+  - lookupPattern
+    - easy win here - inline the table lookup
+- other ideas:
+  - when ordering, remove useless guesses that don't split (small gain)
+  - memoize answer sets' solvability lower bounds to avoid recomputing

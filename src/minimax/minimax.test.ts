@@ -131,7 +131,7 @@ describe('order guesses', () => {
   const { answerWords, answerIndex, guessIndex, orderGuesses } = smallMinimax
   const answerSet = answerWords.map(answerIndex)
   it('orders by largest bucket size then by order seen', () => {
-    const order = orderGuesses(answerSet)
+    const order = orderGuesses(answerSet, 3)
     expect(order).toEqual([
       guessIndex('SLATE'),
       guessIndex('PLATE'),
